@@ -1,0 +1,92 @@
+{
+  "id": "lists",
+  "template": "concept",
+  "title": "Lists",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "What is a list?",
+    "paragraphs": [
+      "A list holds several values, in order, inside square brackets `[ ]`. You'll use lists all through this externship: the pages of an SDF, the dates you find on them, the document types you detect."
+    ],
+    "points": [
+      { "title": "Ordered", "text": "Items stay in the order you put them in." },
+      { "title": "Counts from 0", "text": "The first item is at position 0, not 1." },
+      { "title": "Can grow", "text": "Add to the end with `.append()`." }
+    ],
+    "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]"
+  },
+  "example": {
+    "heading": "What it looks like",
+    "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]",
+    "visual": {
+      "type": "boxes",
+      "label": "doc_types",
+      "items": ["Cover Letter", "Certificate of Quality", "BSE/TSE Declaration"],
+      "highlight": 1
+    },
+    "caption": "`doc_types[1]` is \"Certificate of Quality\": the second item, because counting starts at 0."
+  },
+  "demos": [
+    {
+      "label": "Get one item",
+      "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nprint(doc_types[0])",
+      "note": "Position 0 is the first item."
+    },
+    {
+      "label": "Count the items",
+      "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nprint(len(doc_types))",
+      "note": "len() tells you how many items."
+    },
+    {
+      "label": "Add an item",
+      "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\ndoc_types.append(\"Chain of Custody\")\nprint(doc_types)",
+      "note": ".append() adds to the end."
+    },
+    {
+      "label": "Loop over it",
+      "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nfor doc_type in doc_types:\n    print(\"Found:\", doc_type)",
+      "note": "A for loop visits each item in order."
+    }
+  ],
+  "try": {
+    "prompt": "You just found a **Material Description** page. Add \"Material Description\" to the end of `doc_types`, then print the list.",
+    "starter": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\n# add \"Material Description\", then print the list\n",
+    "solution": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\ndoc_types.append(\"Material Description\")\nprint(doc_types)",
+    "checks": [
+      {
+        "expr": "len(doc_types) == 3",
+        "expect": true,
+        "hint": "Your list should end up with exactly 3 items. To add one item to the end of a list, use doc_types.append(...) once."
+      },
+      {
+        "expr": "doc_types[-1] == \"Material Description\"",
+        "expect": true,
+        "hint": "Your list has 3 items, but the last one isn't \"Material Description\". Check the spelling and that you added it to the end."
+      }
+    ],
+    "expect_stdout": "['Cover Letter', 'Certificate of Quality', 'Material Description']",
+    "stdout_hint": "Your list changed, but nothing gets printed. Add print(doc_types) on the last line.",
+    "wrong": [
+      {
+        "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\nprint(doc_types)",
+        "hint_contains": "append"
+      },
+      {
+        "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\ndoc_types.append(\"Material Descripton\")\nprint(doc_types)",
+        "hint_contains": "spelling"
+      },
+      {
+        "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\ndoc_types.append(\"Material Description\")",
+        "hint_contains": "print"
+      }
+    ]
+  },
+  "learn": {
+    "video": { "youtube_id": "", "title": "Python lists" },
+    "links": [
+      { "label": "Lecture or article 1", "url": "" },
+      { "label": "Lecture or article 2", "url": "" }
+    ],
+    "used_later": "Collecting the dates you find on each page, and grouping pages by document type later in the externship."
+  }
+}
