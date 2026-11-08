@@ -77,6 +77,17 @@ function runErrorText(r) {
   return "";
 }
 
+// Scroll the step panel (only) so `el` is visible. Deliberately not
+// el.scrollIntoView(): Chrome also scrolls ancestor frames, which would move the
+// Notion page around the embed.
+function revealInPanel(el) {
+  const panel = document.getElementById("panels");
+  const p = panel.getBoundingClientRect();
+  const r = el.getBoundingClientRect();
+  if (r.height > p.height || r.top < p.top) panel.scrollTop += r.top - p.top - 8;
+  else if (r.bottom > p.bottom) panel.scrollTop += r.bottom - p.bottom + 8;
+}
+
 // ---------- panels ----------
 
 function whatPanel(l) {
@@ -163,6 +174,7 @@ function demoPanel(l) {
     else if (r.timedOut || r.error) outEl.append(runErrorText(r));
     else outEl.append(r.stdout.trimEnd() || "(no output)");
     outWrap.hidden = false;
+    revealInPanel(outWrap);
   });
 
   select(0);
@@ -201,6 +213,8 @@ function tryPanel(l) {
   }
   function showFeedback(ok, title, ...body) {
     feedback.replaceChildren(h("div", { class: "feedback " + (ok ? "ok" : "no") }, h("span", { class: "fb-title" }, title), ...body));
+    // Keep the new message visible inside the scrolling panel (never scrolls the page).
+    revealInPanel(feedback);
   }
 
   async function onCheck() {
@@ -222,14 +236,16 @@ function tryPanel(l) {
     const verdict = judge(t, r, values);
     attempts += 1;
     attemptsEl.textContent = `Attempts: ${attempts}`;
+    if (verdict.ok) solved = true;
+    else wrong += 1;
+    // Update the button row first: a newly shown "Show answer" button can wrap
+    // onto a new line and push the feedback down.
+    syncReveal();
     if (verdict.ok) {
-      solved = true;
       showFeedback(true, "Correct!", h("span", { class: "fb-msg" }, "That matches what we expected. Here is what printed:"), h("pre", {}, r.stdout.trimEnd()));
     } else {
-      wrong += 1;
       showFeedback(false, "Not quite yet", h("span", { class: "fb-msg" }, verdict.hint));
     }
-    syncReveal();
   }
 
   checkBtn.addEventListener("click", onCheck);
@@ -253,6 +269,7 @@ function tryPanel(l) {
     revealed = true;
     answer.hidden = false;
     syncReveal();
+    revealInPanel(answer);
   });
 
   return h(
