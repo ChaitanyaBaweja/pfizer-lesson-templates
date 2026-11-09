@@ -23,6 +23,11 @@ test("there is at least one lesson", () => {
   assert.ok(files.length >= 1);
 });
 
+test("there is at least one lesson for each template", () => {
+  const used = new Set(files.map((f) => JSON.parse(readFileSync(join(dir, f), "utf8")).template));
+  for (const t of ["concept", "read-code", "fix-error"]) assert.ok(used.has(t), `no lesson uses the ${t} template`);
+});
+
 for (const file of files) {
   const lesson = JSON.parse(readFileSync(join(dir, file), "utf8"));
   const name = `${file}`;
@@ -82,8 +87,31 @@ for (const file of files) {
       const fixed = await runner.run(okFix[0].fixed_code);
       assert.equal(fixed.error, null);
     });
+
+    test(`${name}: traceback ends with the error type and its arrow points at arrow_line`, () => {
+      const last = [...lesson.traceback].reverse().find((l) => l.trim() !== "");
+      assert.ok(last.startsWith(lesson.error_type + ":"), `last traceback line was: ${last}`);
+      const arrow = lesson.traceback.find((l) => /^\s*---->/.test(l));
+      assert.ok(arrow, "traceback has no ----> line");
+      const m = arrow.match(/^\s*---->\s+(\d+)\s(.*)$/);
+      assert.equal(Number(m[1]), lesson.arrow_line);
+      assert.equal(m[2].trim(), lesson.code.split("\n")[lesson.arrow_line - 1].trim());
+    });
   }
 }
+
+// ---- fix-error "Next error" convention ----
+
+test("fix-error lessons: used_later names the next error (N+1 of 8 · ErrorType)", () => {
+  const all = files.map((f) => JSON.parse(readFileSync(join(dir, f), "utf8"))).filter((l) => l.template === "fix-error");
+  for (const l of all) {
+    if (l.number >= 8) continue;
+    const prefix = `${l.number + 1} of 8 · `;
+    assert.ok(l.learn.used_later.startsWith(prefix), `${l.id}: used_later must start with "${prefix}", was "${l.learn.used_later}"`);
+    const next = all.find((n) => n.number === l.number + 1);
+    if (next) assert.equal(l.learn.used_later.slice(prefix.length), next.error_type, `${l.id}: next error name`);
+  }
+});
 
 // ---- loader ----
 

@@ -1,0 +1,76 @@
+{
+  "id": "read-imports-with",
+  "template": "read-code",
+  "title": "Opening a PDF, page by page",
+  "kicker": "Python for SDFs · Read the code",
+  "lines": [
+    {
+      "code": "import fitz",
+      "title": "Load the PDF library",
+      "text": "Loads PyMuPDF, the library that opens PDFs. In code it is called `fitz`, an old name that stuck."
+    },
+    {
+      "code": "doc = fitz.open(\"/content/sample-sdf-document.pdf\")",
+      "title": "Open the file",
+      "text": "Opens the PDF you uploaded to Colab. `/content/` is the folder where Colab keeps uploads. `doc` now holds the whole document."
+    },
+    {
+      "code": "for i, page in enumerate(doc):",
+      "title": "Go page by page",
+      "text": "Visits each page in turn. `enumerate` hands you two things each time: a counter `i`, starting at 0, and the page itself."
+    },
+    {
+      "code": "    text = page.get_text()",
+      "title": "Ask the page for its text",
+      "text": "A method call: the page gives back all its text as one string, which is stored in `text`."
+    },
+    {
+      "code": "    print(f\"Page {i + 1}: {len(text)} characters\")",
+      "title": "Print a summary line",
+      "text": "An f-string fills in the values inside the curly brackets. `i + 1` turns the counter (0, 1, 2) into normal page numbers (1, 2, 3)."
+    }
+  ],
+  "predict": {
+    "question": "The sample SDF has 3 pages. When this code runs, what does the **first** printed line start with?",
+    "options": [
+      {
+        "label": "Page 0:",
+        "ok": false,
+        "feedback": "Close, but `i` starts at 0 and the code prints `i + 1`, so the first number is 1."
+      },
+      {
+        "label": "Page 1:",
+        "ok": true,
+        "feedback": "Yes. `enumerate` starts `i` at 0, and the f-string prints `i + 1`, so the first line says Page 1."
+      },
+      {
+        "label": "page 1:",
+        "ok": false,
+        "feedback": "Look at the f-string again: the text inside the quotes is \"Page\", with a capital P, and Python prints it exactly."
+      },
+      {
+        "label": "An error",
+        "ok": false,
+        "feedback": "Every line here is valid Python, as long as the PDF exists at that path. It runs fine."
+      }
+    ]
+  },
+  "verify": null,
+  "learn": {
+    "video": {
+      "youtube_id": "",
+      "title": "Reading library code"
+    },
+    "links": [
+      {
+        "label": "PyMuPDF docs: opening a document",
+        "url": ""
+      },
+      {
+        "label": "Lecture or article",
+        "url": ""
+      }
+    ],
+    "used_later": "Project 3, where you pull text and dates out of SDF pages, and again in the RAG projects."
+  }
+}

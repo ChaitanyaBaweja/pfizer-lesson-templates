@@ -2,90 +2,18 @@
 // What is it? / Example / Demo / Try it / Learn more.
 // All lesson text goes in via textContent (never innerHTML); `inline()` turns
 // `code` and **bold** in lesson text into real elements.
-import { load } from "./lesson-loader.js";
-import { run, evalChecks } from "./runner.js";
-import { judge, revealAllowed, isLoadFailure, TIMEOUT_HINT } from "./check.js";
+import { evalChecks } from "./runner.js";
+import { judge, revealAllowed, isLoadFailure } from "./check.js";
+import { h, inline, loadFailureNode, startFailed, safeRun, runErrorText, revealInPanel, focusRevealed, feedbackSlot, learnPanel, boot } from "./shell.js";
 
 const TAB_LABELS = ["What is it?", "Example", "Demo", "Try it", "Learn more"];
 
-const SVG_TAGS = new Set(["svg", "polygon"]);
-
-function h(tag, attrs = {}, ...kids) {
-  const el = SVG_TAGS.has(tag) ? document.createElementNS("http://www.w3.org/2000/svg", tag) : document.createElement(tag);
-  for (const [k, v] of Object.entries(attrs)) {
-    if (v === false || v == null) continue;
-    if (k === "class") el.className = v;
-    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
-    else if (v === true) el.setAttribute(k, "");
-    else el.setAttribute(k, v);
-  }
-  for (const kid of kids.flat()) {
-    if (kid == null || kid === false) continue;
-    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
-  }
-  return el;
-}
-
-// "Use `x` and **bold**" -> text + <code> + <strong> nodes.
-function inline(text) {
-  return String(text)
-    .split(/(`[^`]+`|\*\*[^*]+\*\*)/)
-    .filter((part) => part !== "")
-    .map((part) => {
-      if (part.startsWith("`")) return h("code", {}, part.slice(1, -1));
-      if (part.startsWith("**")) return h("strong", {}, part.slice(2, -2));
-      return part;
-    });
-}
-
-// Review Focus 4: Python could not load (blocked CDN, slow network).
-function loadFailureNode() {
-  return h(
-    "span",
-    {},
-    "Python couldn't load here. Open this lesson in a new tab: ",
-    h("a", { href: location.href, target: "_blank", rel: "noopener" }, "Open lesson in a new tab")
-  );
-}
-
-// The runner should never reject, but if it does (e.g. a browser quirk) the
-// student still gets the "couldn't load" message instead of a stuck button.
-const startFailed = (e) => ({
-  ok: false,
-  stdout: "",
-  error: { type: "LoadError", message: String((e && e.message) || e), line: null },
-  timedOut: false,
-});
-async function safeRun(code) {
-  try {
-    return await run(code);
-  } catch (e) {
-    return startFailed(e);
-  }
-}
 async function safeEval(code, exprs) {
   try {
     return await evalChecks(code, exprs);
   } catch (e) {
     return { run: startFailed(e), values: [] };
   }
-}
-
-function runErrorText(r) {
-  if (r.timedOut) return TIMEOUT_HINT;
-  if (r.error) return `${r.error.type}${r.error.message ? ": " + r.error.message : ""}`;
-  return "";
-}
-
-// Scroll the step panel (only) so `el` is visible. Deliberately not
-// el.scrollIntoView(): Chrome also scrolls ancestor frames, which would move the
-// Notion page around the embed.
-function revealInPanel(el) {
-  const panel = document.getElementById("panels");
-  const p = panel.getBoundingClientRect();
-  const r = el.getBoundingClientRect();
-  if (r.height > p.height || r.top < p.top) panel.scrollTop += r.top - p.top - 8;
-  else if (r.bottom > p.bottom) panel.scrollTop += r.bottom - p.bottom + 8;
 }
 
 // ---------- panels ----------
@@ -205,17 +133,16 @@ function tryPanel(l) {
   const checkBtn = h("button", { type: "button", class: "btn btn-primary" }, "Run & check");
   const resetBtn = h("button", { type: "button", class: "btn btn-ghost" }, "Start over");
   const revealBtn = h("button", { type: "button", class: "btn btn-link", hidden: true }, "Show answer");
-  const feedback = h("div", { role: "status", "aria-live": "polite", id: "feedback" });
-  const answer = h("div", { hidden: true, id: "answer" }, h("span", { class: "small-label" }, "One way to do it"), h("pre", { class: "answer" }, t.solution));
+  const slot = feedbackSlot();
+  const feedback = slot.el;
+  feedback.id = "feedback";
+  const answer = h("div", { hidden: true, id: "answer", class: "answer-box" }, h("span", { class: "small-label" }, "One way to do it"), h("pre", { class: "answer" }, t.solution));
 
   function syncReveal() {
     revealBtn.hidden = !(revealAllowed(wrong) && !solved && !revealed);
   }
-  function showFeedback(ok, title, ...body) {
-    feedback.replaceChildren(h("div", { class: "feedback " + (ok ? "ok" : "no") }, h("span", { class: "fb-title" }, title), ...body));
-    // Keep the new message visible inside the scrolling panel (never scrolls the page).
-    revealInPanel(feedback);
-  }
+  // Keeps the new message visible inside the scrolling panel (never scrolls the page).
+  const showFeedback = slot.show;
 
   async function onCheck() {
     if (busy) return;
@@ -260,7 +187,7 @@ function tryPanel(l) {
     attempts = wrong = 0;
     solved = revealed = false;
     attemptsEl.textContent = "Attempts: 0";
-    feedback.replaceChildren();
+    slot.clear();
     answer.hidden = true;
     syncReveal();
     box.focus();
@@ -269,7 +196,8 @@ function tryPanel(l) {
     revealed = true;
     answer.hidden = false;
     syncReveal();
-    revealInPanel(answer);
+    // "Show answer" just hid itself: keep keyboard focus by moving it to the answer.
+    focusRevealed(answer);
   });
 
   return h(
@@ -285,115 +213,4 @@ function tryPanel(l) {
   );
 }
 
-function learnPanel(l) {
-  const { video: vid, links, used_later: where } = l.learn;
-  const id = vid.youtube_id;
-  const video = id
-    ? h("iframe", {
-        class: "video-frame",
-        src: `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`,
-        title: vid.title || `Video: ${l.title}`,
-        loading: "lazy",
-        allow: "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen",
-        allowfullscreen: true,
-        referrerpolicy: "strict-origin-when-cross-origin",
-      })
-    : h(
-        "div",
-        { class: "video-soon", role: "img", "aria-label": "Video coming soon" },
-        h(
-          "div",
-          { class: "play" },
-          h("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "#fff", "stroke-width": "2.5", "stroke-linecap": "round", "stroke-linejoin": "round", "aria-hidden": "true" }, h("polygon", { points: "7 4 20 12 7 20 7 4" }))
-        ),
-        h("span", {}, "Video coming soon")
-      );
-  const shown = links.filter((x) => x.url);
-  return h(
-    "div",
-    { class: "stack", style: "gap:16px" },
-    h("h2", {}, "Learn more"),
-    h(
-      "div",
-      { class: "learn" },
-      h("div", { class: "video" }, video),
-      h(
-        "div",
-        { class: "learn-side" },
-        shown.length ? h("span", { class: "small-label" }, "Read or watch") : null,
-        shown.map((x) => h("a", { href: x.url, target: "_blank", rel: "noopener noreferrer" }, x.label)),
-        h("span", { class: "small-label", style: shown.length ? "margin-top:10px" : "" }, "Where you'll use this"),
-        h("span", { class: "where" }, where)
-      )
-    )
-  );
-}
-
-// ---------- page ----------
-
-function mount(l) {
-  document.title = `${l.title} · Python for SDFs`;
-  document.getElementById("eyebrow").textContent = l.kicker;
-  document.getElementById("title").textContent = l.title;
-
-  const builders = [whatPanel, examplePanel, demoPanel, tryPanel, learnPanel];
-  const panelsEl = document.getElementById("panels");
-  const tabsEl = document.getElementById("tabs");
-  const back = document.getElementById("back");
-  const next = document.getElementById("next");
-  const stepCount = document.getElementById("step-count");
-  let step = 0;
-
-  const panels = builders.map((build, i) =>
-    h("section", { role: "tabpanel", id: `panel-${i}`, "aria-labelledby": `tab-${i}`, hidden: true }, build(l))
-  );
-  panelsEl.replaceChildren(...panels);
-
-  const tabs = TAB_LABELS.map((label, i) =>
-    h(
-      "button",
-      { type: "button", role: "tab", class: "tab", id: `tab-${i}`, "aria-controls": `panel-${i}`, onclick: () => go(i) },
-      h("span", { class: "tab-dot", "aria-hidden": "true" }, String(i + 1)),
-      h("span", { class: "tab-label" }, label)
-    )
-  );
-  tabsEl.replaceChildren(...tabs);
-  tabsEl.addEventListener("keydown", (e) => {
-    const keys = { ArrowRight: 1, ArrowLeft: -1 };
-    if (e.key in keys) {
-      e.preventDefault();
-      go((step + keys[e.key] + tabs.length) % tabs.length, true);
-    } else if (e.key === "Home" || e.key === "End") {
-      e.preventDefault();
-      go(e.key === "Home" ? 0 : tabs.length - 1, true);
-    }
-  });
-
-  function go(i, focusTab = false) {
-    step = Math.max(0, Math.min(tabs.length - 1, i));
-    tabs.forEach((t, j) => {
-      t.setAttribute("aria-selected", String(j === step));
-      t.tabIndex = j === step ? 0 : -1;
-      t.classList.toggle("done", j < step);
-    });
-    panels.forEach((p, j) => (p.hidden = j !== step));
-    stepCount.replaceChildren(`Step ${step + 1} of ${tabs.length}`, h("span", { class: "only-narrow" }, ` · ${TAB_LABELS[step]}`));
-    const hadFocus = document.activeElement;
-    back.disabled = step === 0;
-    next.disabled = step === tabs.length - 1;
-    // A button that just disabled itself would drop keyboard focus: hand it to the active tab.
-    if (focusTab || ((hadFocus === back || hadFocus === next) && hadFocus.disabled)) tabs[step].focus();
-  }
-  back.addEventListener("click", () => go(step - 1));
-  next.addEventListener("click", () => go(step + 1));
-  go(0);
-}
-
-function showProblem(err) {
-  document.getElementById("title").textContent = "Lesson unavailable";
-  document.getElementById("tabs").hidden = true;
-  document.querySelector(".nav").hidden = true;
-  document.getElementById("panels").replaceChildren(h("div", { class: "error-box", role: "alert" }, h("b", {}, "This lesson can't be shown. "), err.message));
-}
-
-load({ expectTemplate: "concept" }).then(mount, showProblem);
+boot("concept", () => ({ labels: TAB_LABELS, builders: [whatPanel, examplePanel, demoPanel, tryPanel, (l) => learnPanel(l)] }));

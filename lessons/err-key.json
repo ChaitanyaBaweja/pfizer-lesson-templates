@@ -1,0 +1,70 @@
+{
+  "id": "err-key",
+  "template": "fix-error",
+  "title": "KeyError",
+  "kicker": "Python for SDFs · Fix the error",
+  "number": 5,
+  "error_type": "KeyError",
+  "code": "doc = {\"type\": \"Certificate of Quality\", \"issue_date\": \"2023-04-12\"}\nprint(doc[\"expiry_date\"])",
+  "traceback": [
+    "---------------------------------------------------------------------------",
+    "KeyError                                  Traceback (most recent call last)",
+    "<ipython-input-2> in <cell line: 0>()",
+    "      1 doc = {\"type\": \"Certificate of Quality\", \"issue_date\": \"2023-04-12\"}",
+    "----> 2 print(doc[\"expiry_date\"])",
+    "",
+    "KeyError: 'expiry_date'"
+  ],
+  "notes": [
+    {
+      "label": "KeyError",
+      "text": "The type of error. You asked a dictionary for a key it doesn't have."
+    },
+    {
+      "label": "'expiry_date'",
+      "text": "The key it couldn't find. This document only has \"type\" and \"issue_date\"."
+    }
+  ],
+  "arrow_line": 2,
+  "fixes": [
+    {
+      "label": "print(doc.get(\"expiry_date\"))",
+      "ok": true,
+      "title": "Best fix",
+      "feedback": "`.get()` returns `None` when the key is missing, so the code keeps running. Useful because some SDF documents have no expiry date. Output: `None`",
+      "fixed_code": "doc = {\"type\": \"Certificate of Quality\", \"issue_date\": \"2023-04-12\"}\nprint(doc.get(\"expiry_date\"))"
+    },
+    {
+      "label": "print(doc[\"Expiry Date\"])",
+      "ok": false,
+      "title": "Still a KeyError",
+      "feedback": "Keys must match exactly. This dictionary has no \"Expiry Date\" key either.",
+      "fixed_code": "doc = {\"type\": \"Certificate of Quality\", \"issue_date\": \"2023-04-12\"}\nprint(doc[\"Expiry Date\"])"
+    },
+    {
+      "label": "Delete line 2",
+      "ok": false,
+      "title": "The error goes away, but so does your answer",
+      "feedback": "You still need to know whether this document has an expiry date.",
+      "fixed_code": "doc = {\"type\": \"Certificate of Quality\", \"issue_date\": \"2023-04-12\"}"
+    }
+  ],
+  "learn": {
+    "video": {
+      "youtube_id": "",
+      "title": "Reading Python errors"
+    },
+    "links": [
+      {
+        "label": "Python docs: dictionaries and .get()",
+        "url": ""
+      },
+      {
+        "label": "Lecture or article",
+        "url": ""
+      }
+    ],
+    "used_later": "6 of 8 · IndexError"
+  },
+  "_note": "traceback from IPython 7.34 / Python 3.12 (kernel output, only the temp-file path shortened to <ipython-input-2>); confirm against a live Colab run"
+}
