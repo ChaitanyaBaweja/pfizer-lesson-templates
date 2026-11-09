@@ -6,8 +6,7 @@
   "what": {
     "heading": "Where do uploaded files go?",
     "paragraphs": [
-      "When you upload a file to Colab, it goes into a folder called `/content/`. Your code finds the file by its **path**: the folder, then the exact filename.",
-      "This page runs Python in your browser, not in Colab, so it has no `/content/` folder. You'll practice building paths as text, which is where most file mistakes happen."
+      "When you upload a file to Colab, it goes into a folder called `/content/`. Your code finds the file by its **path**: the folder, then the exact filename. This page runs in your browser, not in Colab, so here you'll practice building paths as text, which is where most file mistakes happen."
     ],
     "points": [
       {
@@ -20,7 +19,7 @@
       },
       {
         "title": "Not forever",
-        "text": "Uploads are deleted when the runtime disconnects or is deleted, for example after it sits idle. Upload the file again after that."
+        "text": "Uploads are deleted when the runtime disconnects, for example after it sits idle. Then upload the file again."
       }
     ],
     "code": "path = \"/content/sample-sdf-document.pdf\""

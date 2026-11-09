@@ -6,8 +6,7 @@
   "what": {
     "heading": "What is pandas?",
     "paragraphs": [
-      "**Pandas** is a Python library for working with tables. It holds a table as a **DataFrame**: rows and columns, like a sheet in Excel, that you change with code instead of by hand.",
-      "Real tables are messy. A value is missing, a row was entered twice, a number was saved as text. Pandas finds and fixes each of these in one line."
+      "**Pandas** is a Python library for working with tables, like a sheet in Excel that you change with code. Real tables are messy: a value is missing, a row was entered twice, a number was saved as text. Pandas fixes each of these in one line."
     ],
     "points": [
       {
