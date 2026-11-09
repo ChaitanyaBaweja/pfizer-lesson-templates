@@ -1,0 +1,124 @@
+{
+  "id": "functions",
+  "template": "concept",
+  "title": "Functions",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "What is a function?",
+    "paragraphs": [
+      "A function packs a few lines of code under one name. You write the lines once with `def`, then **call** the function each time you need them, with different inputs."
+    ],
+    "points": [
+      {
+        "title": "def",
+        "text": "`def clean_date(text):` starts a function. The indented lines are its body."
+      },
+      {
+        "title": "Parameters",
+        "text": "The names in the brackets are the inputs. Each call fills them in."
+      },
+      {
+        "title": "return",
+        "text": "Sends a result back, so you can store it in a variable."
+      }
+    ],
+    "code": "def clean_date(text):\n    return text.strip()"
+  },
+  "example": {
+    "heading": "What it looks like",
+    "code": "def clean_date(text):\n    return text.strip().replace(\"Date: \", \"\")\n\nissue = clean_date(\"  Date: 2024-03-15  \")\nprint(issue)",
+    "visual": null,
+    "caption": "The call sends `\"  Date: 2024-03-15  \"` in as `text`. The function cleans it and returns \"2024-03-15\", which is stored in `issue`."
+  },
+  "demos": [
+    {
+      "label": "Define and call",
+      "code": "def show_doc(doc_type):\n    print(\"Processing:\", doc_type)\n\nshow_doc(\"Cover Letter\")\nshow_doc(\"Chain of Custody\")",
+      "note": "Defining a function doesn't run it. The two calls at the bottom do, each with its own input."
+    },
+    {
+      "label": "Return a value",
+      "code": "def clean_date(text):\n    return text.strip().replace(\"Date: \", \"\")\n\nissue = clean_date(\"  Date: 2024-03-15  \")\nexpiry = clean_date(\"Date: 2027-03-15\")\nprint(issue)\nprint(expiry)",
+      "note": "return hands the result back to the line that called the function."
+    },
+    {
+      "label": "Two parameters",
+      "code": "def make_label(doc_type, page_num):\n    return f\"{doc_type} (page {page_num})\"\n\nprint(make_label(\"Certificate of Quality\", 2))\nprint(make_label(\"BSE/TSE Declaration\", 5))",
+      "note": "Inputs are matched in order: the first value goes to doc_type, the second to page_num."
+    },
+    {
+      "label": "print is not return",
+      "code": "def year_print(date_text):\n    print(date_text[0:4])\n\ndef year_return(date_text):\n    return date_text[0:4]\n\na = year_print(\"2024-03-15\")\nb = year_return(\"2024-03-15\")\nprint(\"a is\", a)\nprint(\"b is\", b)",
+      "note": "A function with no return gives back None. print only shows a value on the screen. To keep the value, return it."
+    }
+  ],
+  "try": {
+    "prompt": "Finish `get_year()`. It takes a date like \"2024-03-15\" and **returns** the year as an `int`, like `2024`. Hint: slice the first 4 characters, then convert them with `int()`.",
+    "starter": "def get_year(date_text):\n    # return the year as an int\n    pass\n\nprint(get_year(\"2024-03-15\"))\n",
+    "solution": "def get_year(date_text):\n    return int(date_text[0:4])\n\nprint(get_year(\"2024-03-15\"))",
+    "checks": [
+      {
+        "expr": "callable(get_year)",
+        "expect": true,
+        "hint": "Keep the line def get_year(date_text): so the function exists."
+      },
+      {
+        "expr": "get_year(\"2024-03-15\") is not None",
+        "expect": true,
+        "hint": "get_year() doesn't return anything yet, so it gives back None. Use return, not print, to send the year back."
+      },
+      {
+        "expr": "isinstance(get_year(\"2024-03-15\"), int)",
+        "expect": true,
+        "hint": "get_year() returns text like \"2024\", not a number. Wrap the slice in int(...)."
+      },
+      {
+        "expr": "get_year(\"2024-03-15\") == 2024",
+        "expect": true,
+        "hint": "get_year(\"2024-03-15\") should be 2024. The year is the first 4 characters: date_text[0:4]."
+      },
+      {
+        "expr": "get_year(\"2019-11-30\") == 2019",
+        "expect": true,
+        "hint": "get_year(\"2019-11-30\") should be 2019, but your function gives the same answer every time. Work from the parameter date_text instead of a fixed value."
+      }
+    ],
+    "expect_stdout": null,
+    "stdout_hint": "",
+    "wrong": [
+      {
+        "code": "def get_year(date_text):\n    print(int(date_text[0:4]))\n\nprint(get_year(\"2024-03-15\"))",
+        "hint_contains": "not print"
+      },
+      {
+        "code": "def get_year(date_text):\n    return date_text[0:4]\n\nprint(get_year(\"2024-03-15\"))",
+        "hint_contains": "int(...)"
+      },
+      {
+        "code": "def get_year(date_text):\n    return int(date_text[0:3])\n\nprint(get_year(\"2024-03-15\"))",
+        "hint_contains": "first 4 characters"
+      },
+      {
+        "code": "def get_year(date_text):\n    return 2024\n\nprint(get_year(\"2024-03-15\"))",
+        "hint_contains": "parameter date_text"
+      },
+      {
+        "code": "date_text = \"2024-03-15\"\n\ndef get_year(date_text):\n    return int(\"2024-03-15\"[0:4])\n\nprint(get_year(\"2024-03-15\"))",
+        "hint_contains": "same answer every time"
+      }
+    ]
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "89cGQjB5R4M",
+      "title": "Functions: def, arguments and return (Bro Code)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: defining functions",
+        "url": "https://docs.python.org/3/tutorial/controlflow.html#defining-functions"
+      }
+    ],
+    "used_later": "You'll write age_flag() in this project's notebook, and Project 7 builds its pipeline from functions like classify_document_type(text)."
+  }
+}

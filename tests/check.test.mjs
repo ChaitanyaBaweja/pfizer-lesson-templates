@@ -36,7 +36,8 @@ test("judge_error_names_lesson", () => {
 test("judge_error_all_eight_lessons", () => {
   for (const t of ["SyntaxError", "IndentationError", "NameError", "TypeError", "KeyError", "IndexError", "FileNotFoundError", "ModuleNotFoundError"]) {
     const run = { ok: false, stdout: "", error: { type: t, message: "m", line: null }, timedOut: false };
-    assert.equal(judge(tryBlock, run, []).hint, `Your code stopped with a ${t}: m. See "Fix the error: ${t}".`);
+    const a = t === "IndentationError" || t === "IndexError" ? "an" : "a";
+    assert.equal(judge(tryBlock, run, []).hint, `Your code stopped with ${a} ${t}: m. See "Fix the error: ${t}".`);
   }
 });
 
@@ -80,6 +81,17 @@ test("judge_pass", () => {
 test("judge_null_expect_stdout_skips_stdout", () => {
   const tb = { checks: [], expect_stdout: null, stdout_hint: "x" };
   assert.deepEqual(judge(tb, { ...okRun, stdout: "anything" }, []), { ok: true, hint: "" });
+});
+
+test("judge_error_hint_uses_an_before_vowels", () => {
+  const hint = (type) => judge(tryBlock, { ok: false, stdout: "", error: { type, message: "m", line: 1 }, timedOut: false }, []).hint;
+  assert.ok(hint("AttributeError").startsWith("Your code stopped with an AttributeError: m."));
+  assert.ok(hint("ImportError").startsWith("Your code stopped with an ImportError: m."));
+  assert.ok(hint("OSError").startsWith("Your code stopped with an OSError: m."));
+  assert.ok(hint("IndentationError").startsWith("Your code stopped with an IndentationError: m."));
+  assert.ok(hint("ValueError").startsWith("Your code stopped with a ValueError: m."));
+  assert.ok(hint("UnboundLocalError").startsWith("Your code stopped with an UnboundLocalError: m."));
+  assert.ok(hint("UnicodeDecodeError").startsWith("Your code stopped with a UnicodeDecodeError: m."));
 });
 
 test("judge_error_empty_message", () => {

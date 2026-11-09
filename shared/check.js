@@ -35,10 +35,19 @@ export function deepEqual(a, b) {
   return ka.every((k) => Object.prototype.hasOwnProperty.call(b, k) && deepEqual(a[k], b[k]));
 }
 
+// "an" before a vowel sound: an IndentationError, an ImportError, an OSError.
+// "U" said as "you" (UnicodeDecodeError, UserWarning) keeps "a".
+export function article(word) {
+  const w = String(word);
+  if (/^U(ni|s)/.test(w)) return "a";
+  return /^[AEIOU]/i.test(w) ? "an" : "a";
+}
+
 function errorHint(error) {
+  const a = article(error.type);
   let hint = error.message
-    ? `Your code stopped with a ${error.type}: ${error.message}.`
-    : `Your code stopped with a ${error.type}.`;
+    ? `Your code stopped with ${a} ${error.type}: ${error.message}.`
+    : `Your code stopped with ${a} ${error.type}.`;
   const title = Object.prototype.hasOwnProperty.call(ERROR_LESSONS, error.type)
     ? ERROR_LESSONS[error.type]
     : null;

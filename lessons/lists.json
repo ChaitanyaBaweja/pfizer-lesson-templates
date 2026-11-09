@@ -6,7 +6,8 @@
   "what": {
     "heading": "What is a list?",
     "paragraphs": [
-      "A list holds several values, in order, inside square brackets `[ ]`. You'll use lists all through this externship: the pages of an SDF, the dates you find on them, the document types you detect."
+      "A list holds several values, in order, inside square brackets `[ ]`. You'll use lists all through this externship: the pages of an SDF, the dates you find on them, the document types you detect.",
+      "A **tuple** is like a list, but it uses round brackets `( )` and can't be changed after you make it."
     ],
     "points": [
       { "title": "Ordered", "text": "Items stay in the order you put them in." },
@@ -29,13 +30,8 @@
   "demos": [
     {
       "label": "Get one item",
-      "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nprint(doc_types[0])",
-      "note": "Position 0 is the first item."
-    },
-    {
-      "label": "Count the items",
-      "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nprint(len(doc_types))",
-      "note": "len() tells you how many items."
+      "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nprint(doc_types[0])\nprint(len(doc_types))",
+      "note": "Position 0 is the first item. len() tells you how many items."
     },
     {
       "label": "Add an item",
@@ -43,16 +39,26 @@
       "note": ".append() adds to the end."
     },
     {
-      "label": "Loop over it",
-      "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nfor doc_type in doc_types:\n    print(\"Found:\", doc_type)",
-      "note": "A for loop visits each item in order."
+      "label": "A tuple",
+      "code": "word = (72.0, 100.5, 118.4, 112.0, \"Expiry\", 3, 0, 1)\nprint(word[4])\nprint(len(word))",
+      "note": "This tuple is shaped like a word from PyMuPDF in Project 3: four box positions, the text, then three more numbers. You read it like a list, but word[4] = \"Lot\" would stop with a TypeError, because a tuple can't be changed."
+    },
+    {
+      "label": "Unpack a word",
+      "code": "word = (72.0, 100.5, 118.4, 112.0, \"Expiry\", 3, 0, 1)\nx0, y0, x1, y1, text, *_ = word\nprint(text)\nprint(x0, y0)\nprint(_)",
+      "note": "Each name on the left gets one item, in order. *_ collects the extras you don't need into a list."
     }
   ],
   "try": {
-    "prompt": "You just found a **Material Description** page. Add \"Material Description\" to the end of `doc_types`, then print the list.",
+    "prompt": "You found a **Material Description** page. Add \"Material Description\" to the end of `doc_types`, then print the list.",
     "starter": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\n# add \"Material Description\", then print the list\n",
     "solution": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\ndoc_types.append(\"Material Description\")\nprint(doc_types)",
     "checks": [
+      {
+        "expr": "doc_types is not None",
+        "expect": true,
+        "hint": ".append() changes the list in place and gives back None. Write doc_types.append(...) on its own line, not doc_types = doc_types.append(...)."
+      },
       {
         "expr": "len(doc_types) == 3",
         "expect": true,
@@ -72,6 +78,10 @@
         "hint_contains": "append"
       },
       {
+        "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\ndoc_types = doc_types.append(\"Material Description\")\nprint(doc_types)",
+        "hint_contains": "in place"
+      },
+      {
         "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\"]\ndoc_types.append(\"Material Descripton\")\nprint(doc_types)",
         "hint_contains": "spelling"
       },
@@ -82,11 +92,11 @@
     ]
   },
   "learn": {
-    "video": { "youtube_id": "", "title": "Python lists" },
+    "video": { "youtube_id": "1uCH3zqbv2s", "title": "Lists and Tuples (Tech With Tim)" },
     "links": [
-      { "label": "Lecture or article 1", "url": "" },
-      { "label": "Lecture or article 2", "url": "" }
+      { "label": "Python tutorial: lists", "url": "https://docs.python.org/3/tutorial/introduction.html#lists" },
+      { "label": "Python tutorial: tuples and unpacking", "url": "https://docs.python.org/3/tutorial/datastructures.html#tuples-and-sequences" }
     ],
-    "used_later": "Collecting the dates you find on each page, and grouping pages by document type later in the externship."
+    "used_later": "Collecting the dates you find on each page, and grouping pages by document type later in the externship. In Project 3, you'll unpack each word PyMuPDF finds into x0, y0, x1, y1 and its text."
   }
 }

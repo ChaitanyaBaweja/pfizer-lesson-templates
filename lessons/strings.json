@@ -1,0 +1,152 @@
+{
+  "id": "strings",
+  "template": "concept",
+  "title": "Strings",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "What is a string?",
+    "paragraphs": [
+      "A string is text inside quotes. Text from a PDF often arrives messy, with extra spaces or odd capitals, and you'll clean it before you use it. You'll also build AI prompts by placing text inside a longer string."
+    ],
+    "points": [
+      {
+        "title": "f-strings",
+        "text": "`f\"Lot: {lot}\"` puts a value inside text."
+      },
+      {
+        "title": "Methods",
+        "text": "`.strip()`, `.lower()`, `.upper()`, `.replace()` and `.split()` clean and cut text."
+      },
+      {
+        "title": "Slicing",
+        "text": "`text[0:4]` takes the characters at positions 0 to 3."
+      }
+    ],
+    "code": "raw = \"  Effective Date: 2025-03-21  \"\nclean = raw.strip()"
+  },
+  "example": {
+    "heading": "What slicing looks like",
+    "code": "date_text = \"2025-03-21\"\nyear = date_text[0:4]",
+    "visual": {
+      "type": "boxes",
+      "label": "date_text",
+      "items": [
+        "2",
+        "0",
+        "2",
+        "5",
+        "-",
+        "0",
+        "3",
+        "-",
+        "2",
+        "1"
+      ],
+      "highlight": 0
+    },
+    "caption": "`date_text[0:4]` takes positions 0, 1, 2 and 3, so `year` is \"2025\". The end number, 4, is left out."
+  },
+  "demos": [
+    {
+      "label": "Clean messy text",
+      "code": "raw = \"  Effective Date: 2025-03-21  \"\nclean = raw.strip()\nprint(clean)\nprint(clean.replace(\"Effective Date: \", \"\"))",
+      "note": ".strip() removes spaces at both ends. .replace(old, new) swaps one piece of text for another; an empty \"\" removes it."
+    },
+    {
+      "label": "Change capitals",
+      "code": "doc_type = \"Certificate of Quality\"\nprint(doc_type.upper())\nprint(doc_type.lower())\nfound = \"COVER LETTER\"\nprint(found.lower() == \"Cover Letter\".lower())",
+      "note": "Lowering both sides before you compare them means capital letters no longer matter."
+    },
+    {
+      "label": "Slice and split",
+      "code": "date_text = \"2025-03-21\"\nprint(date_text[0:4])\nprint(date_text[5:7])\nprint(date_text.split(\"-\"))\nprint(\"Lot AB-4417  Exp 2027\".split())",
+      "note": ".split(\"-\") cuts at each dash. With nothing inside the brackets, .split() cuts at spaces."
+    },
+    {
+      "label": "A multi-line prompt",
+      "code": "page_text = \"Certificate of Quality. Lot AB-4417.\"\nprompt = f\"\"\"Classify this page.\nReturn JSON like this:\n{{\"doc_type\": \"<type>\"}}\n\nPage text:\n{page_text}\"\"\"\nprint(prompt)",
+      "note": "Three quotes let a string run over several lines. {page_text} gets filled in. {{ and }} print as one real { and }."
+    }
+  ],
+  "try": {
+    "prompt": "Clean `raw_lot` into `lot` (no spaces, capital letters: \"AB-4417\"). Then turn the prompt into an f-string: add `f` before the three quotes, put `{lot}` where it says LOT, and double the JSON braces to `{{` and `}}` so they stay as real braces. (Single braces there stop the code with a ValueError.)",
+    "starter": "raw_lot = \"  ab-4417  \"\nlot = raw_lot\n\nprompt = \"\"\"Find the expiry date for lot LOT.\nReturn JSON: {\"expiry\": \"YYYY-MM-DD\"}\"\"\"\nprint(prompt)\n",
+    "solution": "raw_lot = \"  ab-4417  \"\nlot = raw_lot.strip().upper()\n\nprompt = f\"\"\"Find the expiry date for lot {lot}.\nReturn JSON: {{\"expiry\": \"YYYY-MM-DD\"}}\"\"\"\nprint(prompt)",
+    "checks": [
+      {
+        "expr": "lot == \"AB-4417\"",
+        "expect": true,
+        "hint": "lot should be \"AB-4417\". Use .strip() to remove the spaces and .upper() for capital letters. String methods give back a new string, so store the result: lot = raw_lot.strip().upper()."
+      },
+      {
+        "expr": "\"LOT\" not in prompt",
+        "expect": true,
+        "hint": "Your prompt still says LOT. Replace that word with {lot} inside the string."
+      },
+      {
+        "expr": "\"{lot}\" not in prompt",
+        "expect": true,
+        "hint": "Your prompt shows {lot} as plain text. Put the letter f right before the three opening quotes (f\"\"\"...), and keep single braces around {lot}."
+      },
+      {
+        "expr": "\"lot AB-4417.\" in prompt",
+        "expect": true,
+        "hint": "The first line of the prompt should end with \"lot AB-4417.\". Check that {lot} sits right after the word lot and before the full stop."
+      },
+      {
+        "expr": "'Return JSON: {\"expiry\": \"YYYY-MM-DD\"}' in prompt",
+        "expect": true,
+        "hint": "The printed prompt should show one { and one } around the JSON. In an f-string, write {{ to get { and }} to get }."
+      }
+    ],
+    "expect_stdout": "Find the expiry date for lot AB-4417.\nReturn JSON: {\"expiry\": \"YYYY-MM-DD\"}",
+    "stdout_hint": "Your prompt is right, but it isn't printed. Keep print(prompt) at the end.",
+    "wrong": [
+      {
+        "code": "raw_lot = \"  ab-4417  \"\nlot = raw_lot.strip()\n\nprompt = f\"\"\"Find the expiry date for lot {lot}.\nReturn JSON: {{\"expiry\": \"YYYY-MM-DD\"}}\"\"\"\nprint(prompt)",
+        "hint_contains": ".upper()"
+      },
+      {
+        "code": "raw_lot = \"  ab-4417  \"\nlot = raw_lot.upper()\n\nprompt = f\"\"\"Find the expiry date for lot {lot}.\nReturn JSON: {{\"expiry\": \"YYYY-MM-DD\"}}\"\"\"\nprint(prompt)",
+        "hint_contains": ".strip()"
+      },
+      {
+        "code": "raw_lot = \"  ab-4417  \"\nlot = raw_lot.strip()\nlot.upper()\n\nprompt = f\"\"\"Find the expiry date for lot {lot}.\nReturn JSON: {{\"expiry\": \"YYYY-MM-DD\"}}\"\"\"\nprint(prompt)",
+        "hint_contains": "store the result"
+      },
+      {
+        "code": "raw_lot = \"  ab-4417  \"\nlot = raw_lot.strip().upper()\n\nprompt = \"\"\"Find the expiry date for lot {lot}.\nReturn JSON: {{\"expiry\": \"YYYY-MM-DD\"}}\"\"\"\nprint(prompt)",
+        "hint_contains": "letter f"
+      },
+      {
+        "code": "raw_lot = \"  ab-4417  \"\nlot = raw_lot.strip().upper()\n\nprompt = f\"\"\"Find the expiry date for lot LOT.\nReturn JSON: {{\"expiry\": \"YYYY-MM-DD\"}}\"\"\"\nprint(prompt)",
+        "hint_contains": "Replace that word"
+      },
+      {
+        "code": "raw_lot = \"  ab-4417  \"\nlot = raw_lot.strip().upper()\n\nprompt = f\"\"\"Find the expiry date for lot {{lot}}.\nReturn JSON: {{\"expiry\": \"YYYY-MM-DD\"}}\"\"\"\nprint(prompt)",
+        "hint_contains": "single braces"
+      },
+      {
+        "code": "raw_lot = \"  ab-4417  \"\nlot = raw_lot.strip().upper()\n\nprompt = f\"\"\"Find the expiry date for lot {lot}.\nReturn JSON: {\"expiry\": \"YYYY-MM-DD\"}\"\"\"\nprint(prompt)",
+        "hint_contains": "ValueError"
+      }
+    ]
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "JJ5Cq6I9lbs",
+      "title": "String methods (Khan Academy)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: text and slicing",
+        "url": "https://docs.python.org/3/tutorial/introduction.html#text"
+      },
+      {
+        "label": "Python tutorial: f-strings",
+        "url": "https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals"
+      }
+    ],
+    "used_later": "Project 7's prompts are multi-line f-strings with {{ }} around the JSON example, and Projects 3, 4 and 8 clean text with .strip(), .lower() and .replace()."
+  }
+}

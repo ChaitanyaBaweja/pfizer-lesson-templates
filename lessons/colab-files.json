@@ -1,0 +1,128 @@
+{
+  "id": "colab-files",
+  "template": "concept",
+  "title": "Uploading files and file paths",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "Where do uploaded files go?",
+    "paragraphs": [
+      "When you upload a file to Colab, it goes into a folder called `/content/`. Your code finds the file by its **path**: the folder, then the exact filename.",
+      "This page runs Python in your browser, not in Colab, so it has no `/content/` folder. You'll practice building paths as text, which is where most file mistakes happen."
+    ],
+    "points": [
+      {
+        "title": "The folder",
+        "text": "Uploads land in `/content/`, so a path starts with `/content/`."
+      },
+      {
+        "title": "The exact name",
+        "text": "Capital letters, spaces, dashes and the `.pdf` ending all have to match."
+      },
+      {
+        "title": "Not forever",
+        "text": "Uploads are deleted when the runtime disconnects or is deleted, for example after it sits idle. Upload the file again after that."
+      }
+    ],
+    "code": "path = \"/content/sample-sdf-document.pdf\""
+  },
+  "example": {
+    "heading": "What it looks like",
+    "code": "folder = \"/content/\"\nfilename = \"sample-sdf-document.pdf\"\npath = folder + filename\nprint(path)",
+    "visual": null,
+    "caption": "`path` is \"/content/sample-sdf-document.pdf\": the folder first, then the filename, letter for letter."
+  },
+  "demos": [
+    {
+      "label": "Join folder and name",
+      "code": "folder = \"/content/\"\nfilename = \"sample-sdf-document.pdf\"\npath = folder + filename\nprint(path)",
+      "note": "The + sign joins two pieces of text. The slash at the end of /content/ keeps the folder and the name apart."
+    },
+    {
+      "label": "Build it with an f-string",
+      "code": "filename = \"Cover_Letter_2025.pdf\"\npath = f\"/content/{filename}\"\nprint(path)",
+      "note": "The f before the quote lets you put a variable inside {curly braces}. Python swaps in its value."
+    },
+    {
+      "label": "Spot a typo",
+      "code": "uploaded = \"sample-sdf-document.pdf\"\ntyped = \"Sample-SDF-document.pdf\"\nprint(uploaded == typed)\nprint(uploaded == \"sample-sdf-document.pdf\")",
+      "note": "Python compares names letter by letter, so capital letters count. In Colab, a wrong name gives a FileNotFoundError."
+    },
+    {
+      "label": "A missing slash",
+      "code": "filename = \"pharma-blob-sample.pdf\"\nprint(\"/content\" + filename)\nprint(\"/content/\" + filename)",
+      "note": "Without the slash, the folder and the name run together into a path that doesn't exist."
+    }
+  ],
+  "try": {
+    "prompt": "You uploaded a file named **Certificate_of_Quality_2025.pdf**. Use an f-string to build its full Colab path in a variable named `path`, then print `path`.",
+    "starter": "filename = \"Certificate_of_Quality_2025.pdf\"\n# build the full path with an f-string, then print it\n",
+    "solution": "filename = \"Certificate_of_Quality_2025.pdf\"\npath = f\"/content/{filename}\"\nprint(path)",
+    "checks": [
+      {
+        "expr": "isinstance(path, str)",
+        "expect": true,
+        "hint": "Create a variable named path that holds the full path as text, for example path = f\"/content/{filename}\"."
+      },
+      {
+        "expr": "\"{\" not in path",
+        "expect": true,
+        "hint": "Your path still shows the curly braces as plain text. Put the letter f right before the opening quote: f\"/content/{filename}\"."
+      },
+      {
+        "expr": "path.startswith(\"/content/\")",
+        "expect": true,
+        "hint": "Your path should start with the folder /content/, with a slash at the start and a slash at the end."
+      },
+      {
+        "expr": "path == \"/content/Certificate_of_Quality_2025.pdf\"",
+        "expect": true,
+        "hint": "Your path starts with /content/, but the filename part doesn't match Certificate_of_Quality_2025.pdf exactly. Check capital letters, spaces and the .pdf ending. Writing {filename} inside the f-string copies the name exactly."
+      }
+    ],
+    "expect_stdout": "/content/Certificate_of_Quality_2025.pdf",
+    "stdout_hint": "Your path is right, but nothing gets printed. Add print(path) on the last line.",
+    "wrong": [
+      {
+        "code": "filename = \"Certificate_of_Quality_2025.pdf\"\npath = \"/content/{filename}\"\nprint(path)",
+        "hint_contains": "letter f"
+      },
+      {
+        "code": "filename = \"Certificate_of_Quality_2025.pdf\"\npath = f\"content/{filename}\"\nprint(path)",
+        "hint_contains": "slash at the start"
+      },
+      {
+        "code": "filename = \"Certificate_of_Quality_2025.pdf\"\npath = f\"/content{filename}\"\nprint(path)",
+        "hint_contains": "slash at the end"
+      },
+      {
+        "code": "filename = \"Certificate_of_Quality_2025.pdf\"\npath = f\"/content/certificate_of_quality_2025.pdf\"\nprint(path)",
+        "hint_contains": "capital letters"
+      },
+      {
+        "code": "filename = \"Certificate_of_Quality_2025.pdf\"\npath = f\"/content/ {filename}\"\nprint(path)",
+        "hint_contains": "spaces"
+      },
+      {
+        "code": "filename = \"Certificate_of_Quality_2025.pdf\"\npath = f\"/content/{filename}\"",
+        "hint_contains": "print(path)"
+      }
+    ]
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "6HFlwqK3oeo",
+      "title": "How to Upload Files to Google Colab (Data Professor)"
+    },
+    "links": [
+      {
+        "label": "Colab FAQ: where your code runs and when the machine is reset",
+        "url": "https://research.google.com/colaboratory/faq.html"
+      },
+      {
+        "label": "Python tutorial: f-strings",
+        "url": "https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals"
+      }
+    ],
+    "used_later": "Project 3 starts by uploading the sample SDF to Colab, and Project 7's notebook opens /content/pharma-blob-sample.pdf."
+  }
+}

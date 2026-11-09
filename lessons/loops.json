@@ -1,0 +1,131 @@
+{
+  "id": "loops",
+  "template": "concept",
+  "title": "Loops",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "What is a loop?",
+    "paragraphs": [
+      "A `for` loop runs the same lines once for each item in a list: each page, each word, each date. The indented lines under the `for` line are what repeats."
+    ],
+    "points": [
+      {
+        "title": "Count along",
+        "text": "`enumerate()` gives a position with each item, and `range()` counts numbers."
+      },
+      {
+        "title": "Pair up",
+        "text": "`zip()` walks two lists side by side."
+      },
+      {
+        "title": "Reset",
+        "text": "A counter set to 0 inside the loop starts again for each item."
+      }
+    ],
+    "code": "for i, doc_type in enumerate(doc_types):\n    print(i, doc_type)"
+  },
+  "example": {
+    "heading": "What it looks like",
+    "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"Chain of Custody\"]\nfor i, doc_type in enumerate(doc_types):\n    print(i, doc_type)",
+    "visual": {
+      "type": "boxes",
+      "label": "doc_types",
+      "items": [
+        "Cover Letter",
+        "Certificate of Quality",
+        "Chain of Custody"
+      ],
+      "highlight": 0
+    },
+    "caption": "The first time around, `i` is 0 and `doc_type` is \"Cover Letter\". Then the loop moves to the next box, until it runs out of items."
+  },
+  "demos": [
+    {
+      "label": "for and enumerate",
+      "code": "doc_types = [\"Cover Letter\", \"Chain of Custody\"]\nfor doc_type in doc_types:\n    print(\"Found:\", doc_type)\n\nfor i, doc_type in enumerate(doc_types):\n    print(i, doc_type)",
+      "note": "The first loop gives each item. The second also gives its position, starting at 0."
+    },
+    {
+      "label": "range and zip",
+      "code": "for page_num in range(1, 4):\n    print(\"Reading page\", page_num)\n\ndoc_types = [\"Cover Letter\", \"Certificate of Quality\"]\nissue_dates = [\"2025-01-10\", \"2024-03-15\"]\nfor doc_type, issue_date in zip(doc_types, issue_dates):\n    print(doc_type, \"issued\", issue_date)",
+      "note": "range(1, 4) gives 1, 2 and 3: the end number is left out. zip() hands you one item from each list at a time."
+    },
+    {
+      "label": "Unpack in the loop line",
+      "code": "words = [\n    (72.0, 100.5, 90.0, 112.0, \"Lot\"),\n    (95.0, 100.5, 140.0, 112.0, \"AB-4417\"),\n]\nfor x0, y0, x1, y1, text in words:\n    print(text, \"starts at x =\", x0)",
+      "note": "Each item is a tuple, and the loop line splits it into five names right away."
+    },
+    {
+      "label": "A counter that resets",
+      "code": "pages = [\n    [\"Certificate\", \"of\", \"Quality\"],\n    [\"Lot\", \"AB-4417\"],\n    [\"Expiry\", \"Date\", \"2027-06-30\", \"Signed\"],\n]\nfor page in pages:\n    count = 0\n    for word in page:\n        count = count + 1\n    print(\"This page has\", count, \"words\")",
+      "note": "count = 0 sits inside the outer loop, so every page starts counting from 0."
+    }
+  ],
+  "try": {
+    "prompt": "Count the words on each page. For each page, start a counter at 0, add 1 for each word, then append the count to `word_counts`. You should end with `[3, 2, 4]`.",
+    "starter": "pages = [\n    [\"Certificate\", \"of\", \"Quality\"],\n    [\"Lot\", \"AB-4417\"],\n    [\"Expiry\", \"Date\", \"2027-06-30\", \"Signed\"],\n]\nword_counts = []\nfor page in pages:\n    # start a counter, count the words on this page, then append it\n    pass\n\nprint(word_counts)\n",
+    "solution": "pages = [\n    [\"Certificate\", \"of\", \"Quality\"],\n    [\"Lot\", \"AB-4417\"],\n    [\"Expiry\", \"Date\", \"2027-06-30\", \"Signed\"],\n]\nword_counts = []\nfor page in pages:\n    count = 0\n    for word in page:\n        count = count + 1\n    word_counts.append(count)\n\nprint(word_counts)",
+    "checks": [
+      {
+        "expr": "len(word_counts) == 3",
+        "expect": true,
+        "hint": "word_counts should have one number per page, so 3 numbers. Append once per page: put word_counts.append(count) after the inner loop, lined up with it, not inside it."
+      },
+      {
+        "expr": "word_counts[0] == 3",
+        "expect": true,
+        "hint": "The first page has 3 words, but your first count isn't 3. If every count is 1, count = 0 is inside the inner loop, so it resets for every word. Move it up one level, right under for page in pages:. Or check that you wrote count = count + 1 (or count += 1)."
+      },
+      {
+        "expr": "word_counts == [3, 2, 4]",
+        "expect": true,
+        "hint": "word_counts should be [3, 2, 4]. If the numbers keep growing, put count = 0 inside the outer loop. Also check that the inner loop goes over page, not pages."
+      }
+    ],
+    "expect_stdout": "[3, 2, 4]",
+    "stdout_hint": "Your counts are right, but they aren't printed. Keep print(word_counts) at the end, outside the loop.",
+    "wrong": [
+      {
+        "code": "pages = [\n    [\"Certificate\", \"of\", \"Quality\"],\n    [\"Lot\", \"AB-4417\"],\n    [\"Expiry\", \"Date\", \"2027-06-30\", \"Signed\"],\n]\nword_counts = []\ncount = 0\nfor page in pages:\n    for word in page:\n        count = count + 1\n    word_counts.append(count)\n\nprint(word_counts)",
+        "hint_contains": "keep growing"
+      },
+      {
+        "code": "pages = [\n    [\"Certificate\", \"of\", \"Quality\"],\n    [\"Lot\", \"AB-4417\"],\n    [\"Expiry\", \"Date\", \"2027-06-30\", \"Signed\"],\n]\nword_counts = []\nfor page in pages:\n    count = 0\n    for word in pages:\n        count = count + 1\n    word_counts.append(count)\n\nprint(word_counts)",
+        "hint_contains": "not pages"
+      },
+      {
+        "code": "pages = [\n    [\"Certificate\", \"of\", \"Quality\"],\n    [\"Lot\", \"AB-4417\"],\n    [\"Expiry\", \"Date\", \"2027-06-30\", \"Signed\"],\n]\nword_counts = []\nfor page in pages:\n    count = 0\n    for word in page:\n        count =+ 1\n    word_counts.append(count)\n\nprint(word_counts)",
+        "hint_contains": "count += 1"
+      },
+      {
+        "code": "pages = [\n    [\"Certificate\", \"of\", \"Quality\"],\n    [\"Lot\", \"AB-4417\"],\n    [\"Expiry\", \"Date\", \"2027-06-30\", \"Signed\"],\n]\nword_counts = []\nfor page in pages:\n    for word in page:\n        count = 0\n        count = count + 1\n    word_counts.append(count)\n\nprint(word_counts)",
+        "hint_contains": "inside the inner loop"
+      },
+      {
+        "code": "pages = [\n    [\"Certificate\", \"of\", \"Quality\"],\n    [\"Lot\", \"AB-4417\"],\n    [\"Expiry\", \"Date\", \"2027-06-30\", \"Signed\"],\n]\nword_counts = []\nfor page in pages:\n    count = 0\n    for word in page:\n        count = count + 1\n        word_counts.append(count)\n\nprint(word_counts)",
+        "hint_contains": "after the inner loop"
+      },
+      {
+        "code": "pages = [\n    [\"Certificate\", \"of\", \"Quality\"],\n    [\"Lot\", \"AB-4417\"],\n    [\"Expiry\", \"Date\", \"2027-06-30\", \"Signed\"],\n]\nword_counts = []\nfor page in pages:\n    count = 0\n    for word in page:\n        count = count + 1\n    word_counts.append(count)\n    print(word_counts)",
+        "hint_contains": "outside the loop"
+      }
+    ]
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "6iF8Xb7Z3wQ",
+      "title": "Loops and Iterations: For/While Loops (Corey Schafer)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: for loops and range()",
+        "url": "https://docs.python.org/3/tutorial/controlflow.html#for-statements"
+      },
+      {
+        "label": "Python tutorial: enumerate() and zip()",
+        "url": "https://docs.python.org/3/tutorial/datastructures.html#looping-techniques"
+      }
+    ],
+    "used_later": "Project 3 reads PDFs with for page_num, page in enumerate(pdf.pages), and Project 7 pairs each document with its type using zip()."
+  }
+}

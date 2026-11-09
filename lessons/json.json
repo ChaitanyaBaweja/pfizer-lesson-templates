@@ -1,0 +1,123 @@
+{
+  "id": "json",
+  "template": "concept",
+  "title": "JSON",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "What is JSON?",
+    "paragraphs": [
+      "JSON is text that stores data in almost the same shape as a Python dictionary. AI models send their answers back as JSON text when you ask them to, and your code turns that text into a real dictionary before it uses it."
+    ],
+    "points": [
+      {
+        "title": "json.loads()",
+        "text": "JSON text → Python dictionary."
+      },
+      {
+        "title": "json.dumps()",
+        "text": "Python dictionary → JSON text."
+      },
+      {
+        "title": "try / except",
+        "text": "Catches broken JSON, so one bad answer doesn't stop the whole notebook."
+      }
+    ],
+    "code": "record = json.loads(reply)"
+  },
+  "example": {
+    "heading": "What it looks like",
+    "code": "import json\n\nreply = '{\"doc_type\": \"Certificate of Quality\", \"lot_number\": \"AB-4417\"}'\nrecord = json.loads(reply)\nprint(record[\"lot_number\"])",
+    "visual": null,
+    "caption": "`reply` is one long string. After `json.loads()`, `record` is a dictionary, so `record[\"lot_number\"]` gives \"AB-4417\"."
+  },
+  "demos": [
+    {
+      "label": "Text to dictionary",
+      "code": "import json\n\nreply = '{\"doc_type\": \"Cover Letter\", \"issue_date\": \"2025-01-10\"}'\nrecord = json.loads(reply)\nprint(type(reply))\nprint(type(record))\nprint(record[\"issue_date\"])",
+      "note": "Before loads, it's a str and you can't read keys from it. After, it's a dict."
+    },
+    {
+      "label": "Dictionary to text",
+      "code": "import json\n\nrecord = {\"doc_type\": \"Material Description\", \"pages\": 2}\ntext = json.dumps(record)\nprint(text)\nprint(type(text))",
+      "note": "dumps turns the dictionary into one string, ready to save to a file or send somewhere."
+    },
+    {
+      "label": "Catch bad JSON",
+      "code": "import json\n\nbad = '{\"doc_type\": \"Cover Letter\"'\ntry:\n    record = json.loads(bad)\nexcept json.JSONDecodeError:\n    print(\"This JSON is broken, so I'm skipping it.\")\n    record = None\nprint(record)",
+      "note": "The closing } is missing. Without try, json.loads() would stop the code with a JSONDecodeError. With it, the except lines run instead."
+    },
+    {
+      "label": "true, false and null",
+      "code": "import json\n\nprint(json.dumps({\"date_found\": True, \"expiry_date\": None}))\nprint(json.loads('{\"date_found\": false, \"expiry_date\": null}'))",
+      "note": "JSON spells them true, false and null. Python spells them True, False and None. loads and dumps translate for you."
+    }
+  ],
+  "try": {
+    "prompt": "Three AI replies came back, and one is broken. For each reply, use `json.loads()` inside `try` and append the record's `\"doc_type\"` to `doc_types`. If the JSON is broken, append `\"Unknown\"` in the `except json.JSONDecodeError:` part. Last, make `summary` with `json.dumps(doc_types)`.",
+    "starter": "import json\n\nreplies = [\n    '{\"doc_type\": \"Certificate of Quality\"}',\n    '{\"doc_type\": \"Cover Letter\"',\n    '{\"doc_type\": \"Chain of Custody\"}',\n]\ndoc_types = []\nfor reply in replies:\n    # try json.loads(reply) here; on json.JSONDecodeError, append \"Unknown\"\n    pass\n\n# summary = ...\n",
+    "solution": "import json\n\nreplies = [\n    '{\"doc_type\": \"Certificate of Quality\"}',\n    '{\"doc_type\": \"Cover Letter\"',\n    '{\"doc_type\": \"Chain of Custody\"}',\n]\ndoc_types = []\nfor reply in replies:\n    try:\n        record = json.loads(reply)\n        doc_types.append(record[\"doc_type\"])\n    except json.JSONDecodeError:\n        doc_types.append(\"Unknown\")\n\nsummary = json.dumps(doc_types)\nprint(summary)",
+    "checks": [
+      {
+        "expr": "len(doc_types) == 3",
+        "expect": true,
+        "hint": "doc_types should have 3 items, one per reply. Put try inside the loop, and in the except part append \"Unknown\", so the broken reply still adds an item."
+      },
+      {
+        "expr": "all(isinstance(t, str) for t in doc_types)",
+        "expect": true,
+        "hint": "doc_types should hold text like \"Cover Letter\", not whole dictionaries. Append record[\"doc_type\"], not record."
+      },
+      {
+        "expr": "doc_types == [\"Certificate of Quality\", \"Unknown\", \"Chain of Custody\"]",
+        "expect": true,
+        "hint": "doc_types should be [\"Certificate of Quality\", \"Unknown\", \"Chain of Custody\"]. Check the spelling of \"Unknown\" and that it goes in the except part."
+      },
+      {
+        "expr": "summary == '[\"Certificate of Quality\", \"Unknown\", \"Chain of Custody\"]'",
+        "expect": true,
+        "hint": "summary should be JSON text: summary = json.dumps(doc_types). str() gives single quotes, which isn't valid JSON."
+      }
+    ],
+    "expect_stdout": null,
+    "stdout_hint": "",
+    "wrong": [
+      {
+        "code": "import json\n\nreplies = [\n    '{\"doc_type\": \"Certificate of Quality\"}',\n    '{\"doc_type\": \"Cover Letter\"',\n    '{\"doc_type\": \"Chain of Custody\"}',\n]\ndoc_types = []\nfor reply in replies:\n    record = json.loads(reply)\n    doc_types.append(record[\"doc_type\"])\n\nsummary = json.dumps(doc_types)\nprint(summary)",
+        "hint_contains": "JSONDecodeError"
+      },
+      {
+        "code": "import json\n\nreplies = [\n    '{\"doc_type\": \"Certificate of Quality\"}',\n    '{\"doc_type\": \"Cover Letter\"',\n    '{\"doc_type\": \"Chain of Custody\"}',\n]\ndoc_types = []\ntry:\n    for reply in replies:\n        record = json.loads(reply)\n        doc_types.append(record[\"doc_type\"])\nexcept json.JSONDecodeError:\n    doc_types.append(\"Unknown\")\n\nsummary = json.dumps(doc_types)\nprint(summary)",
+        "hint_contains": "inside the loop"
+      },
+      {
+        "code": "import json\n\nreplies = [\n    '{\"doc_type\": \"Certificate of Quality\"}',\n    '{\"doc_type\": \"Cover Letter\"',\n    '{\"doc_type\": \"Chain of Custody\"}',\n]\ndoc_types = []\nfor reply in replies:\n    try:\n        record = json.loads(reply)\n        doc_types.append(record)\n    except json.JSONDecodeError:\n        doc_types.append(\"Unknown\")\n\nsummary = json.dumps(doc_types)\nprint(summary)",
+        "hint_contains": "record[\"doc_type\"]"
+      },
+      {
+        "code": "import json\n\nreplies = [\n    '{\"doc_type\": \"Certificate of Quality\"}',\n    '{\"doc_type\": \"Cover Letter\"',\n    '{\"doc_type\": \"Chain of Custody\"}',\n]\ndoc_types = []\nfor reply in replies:\n    try:\n        record = json.loads(reply)\n        doc_types.append(record[\"doc_type\"])\n    except json.JSONDecodeError:\n        print(\"Broken reply\")\n\nsummary = json.dumps(doc_types)\nprint(summary)",
+        "hint_contains": "append \"Unknown\""
+      },
+      {
+        "code": "import json\n\nreplies = [\n    '{\"doc_type\": \"Certificate of Quality\"}',\n    '{\"doc_type\": \"Cover Letter\"',\n    '{\"doc_type\": \"Chain of Custody\"}',\n]\ndoc_types = []\nfor reply in replies:\n    try:\n        record = json.loads(reply)\n        doc_types.append(record[\"doc_type\"])\n    except json.JSONDecodeError:\n        doc_types.append(\"Unknown\")\n\nsummary = str(doc_types)\nprint(summary)",
+        "hint_contains": "json.dumps(doc_types)"
+      }
+    ]
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "-51jxlQaxyA",
+      "title": "How To Use JSON In Python (Tech With Tim)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: saving data with JSON",
+        "url": "https://docs.python.org/3/tutorial/inputoutput.html#saving-structured-data-with-json"
+      },
+      {
+        "label": "Python tutorial: handling exceptions",
+        "url": "https://docs.python.org/3/tutorial/errors.html#handling-exceptions"
+      }
+    ],
+    "used_later": "In Projects 7 and 8, the model's answer is read with json.loads(), and Project 8 wraps that in try/except so one bad reply falls back to \"Other\" instead of crashing."
+  }
+}

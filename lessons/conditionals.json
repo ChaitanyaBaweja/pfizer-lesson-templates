@@ -1,0 +1,128 @@
+{
+  "id": "conditionals",
+  "template": "concept",
+  "title": "Conditionals",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "What is a conditional?",
+    "paragraphs": [
+      "An `if` statement runs its indented lines only when a condition is `True`. Add `elif` and `else` to choose between several paths. Python checks them from the top and runs only the first one that's `True`."
+    ],
+    "points": [
+      {
+        "title": "if / elif / else",
+        "text": "Pick one path out of several."
+      },
+      {
+        "title": "in and not",
+        "text": "`\"Lot\" in line` checks whether text appears. `not` flips True and False."
+      },
+      {
+        "title": "None",
+        "text": "Python's value for \"nothing here\". Check it with `is None`."
+      }
+    ],
+    "code": "if \"Expiry\" in line:\n    print(\"Found an expiry line\")"
+  },
+  "example": {
+    "heading": "What it looks like",
+    "code": "days_left = 45\n\nif days_left < 0:\n    status = \"Expired\"\nelif days_left < 90:\n    status = \"Expiring soon\"\nelse:\n    status = \"OK\"\n\nprint(status)",
+    "visual": null,
+    "caption": "`45 < 0` is False, so Python moves on. `45 < 90` is True, so `status` becomes \"Expiring soon\" and the `else` is skipped."
+  },
+  "demos": [
+    {
+      "label": "if / elif / else",
+      "code": "for days_left in [-3, 45, 400]:\n    if days_left < 0:\n        print(days_left, \"Expired\")\n    elif days_left < 90:\n        print(days_left, \"Expiring soon\")\n    else:\n        print(days_left, \"OK\")",
+      "note": "Each value goes down the list of conditions and stops at the first True one."
+    },
+    {
+      "label": "in and not in",
+      "code": "line = \"Expiry Date: 2027-06-30\"\nif \"Expiry\" in line:\n    print(\"Found an expiry line\")\nif \"Lot\" not in line:\n    print(\"No lot number on this line\")",
+      "note": "in checks whether a piece of text appears inside a string. It works on lists too."
+    },
+    {
+      "label": "not",
+      "code": "date_found = False\nif not date_found:\n    print(\"No date found on this page\")\nelse:\n    print(\"Date found\")",
+      "note": "not turns False into True, so the if line reads like plain English."
+    },
+    {
+      "label": "None",
+      "code": "expiry_date = None\nif expiry_date is None:\n    print(\"No expiry date on this document\")\nelse:\n    print(\"Expires on\", expiry_date)",
+      "note": "None means no value at all. is None is the usual way to check for it."
+    }
+  ],
+  "try": {
+    "prompt": "Give each document a status from `days_left`: **\"No date\"** if it's `None`, **\"Expired\"** if it's below 0, **\"Expiring soon\"** if it's below 90, and **\"OK\"** otherwise. Use `if`, `elif` and `else`, and check for `None` first.",
+    "starter": "docs = [\n    (\"Certificate of Quality\", 400),\n    (\"BSE/TSE Declaration\", 45),\n    (\"Cover Letter\", None),\n    (\"Chain of Custody\", -3),\n]\nstatuses = []\nfor doc_type, days_left in docs:\n    # decide the status with if / elif / else\n    status = \"?\"\n    statuses.append(status)\n\nprint(statuses)",
+    "solution": "docs = [\n    (\"Certificate of Quality\", 400),\n    (\"BSE/TSE Declaration\", 45),\n    (\"Cover Letter\", None),\n    (\"Chain of Custody\", -3),\n]\nstatuses = []\nfor doc_type, days_left in docs:\n    if days_left is None:\n        status = \"No date\"\n    elif days_left < 0:\n        status = \"Expired\"\n    elif days_left < 90:\n        status = \"Expiring soon\"\n    else:\n        status = \"OK\"\n    statuses.append(status)\n\nprint(statuses)",
+    "checks": [
+      {
+        "expr": "\"?\" not in statuses",
+        "expect": true,
+        "hint": "Delete the starter line status = \"?\" (or replace it with your if/elif/else), or every status stays \"?\"."
+      },
+      {
+        "expr": "len(statuses) == 4",
+        "expect": true,
+        "hint": "statuses should have one status per document, so 4. Keep the single statuses.append(status) at the end of the loop."
+      },
+      {
+        "expr": "statuses[2] == \"No date\"",
+        "expect": true,
+        "hint": "The Cover Letter's days_left is None, so its status should be \"No date\". Start with if days_left is None:."
+      },
+      {
+        "expr": "statuses[3] == \"Expired\"",
+        "expect": true,
+        "hint": "The Chain of Custody has -3 days left, so it's \"Expired\". Python runs only the first True branch, so check days_left < 0 before days_left < 90."
+      },
+      {
+        "expr": "statuses == [\"OK\", \"Expiring soon\", \"No date\", \"Expired\"]",
+        "expect": true,
+        "hint": "Close. Check the spelling and capitals of each status: \"OK\", \"Expiring soon\", \"No date\", \"Expired\"."
+      }
+    ],
+    "expect_stdout": "['OK', 'Expiring soon', 'No date', 'Expired']",
+    "stdout_hint": "Your statuses are right, but they aren't printed. Keep print(statuses) at the end.",
+    "wrong": [
+      {
+        "code": "docs = [\n    (\"Certificate of Quality\", 400),\n    (\"BSE/TSE Declaration\", 45),\n    (\"Cover Letter\", None),\n    (\"Chain of Custody\", -3),\n]\nstatuses = []\nfor doc_type, days_left in docs:\n    if days_left < 0:\n        status = \"Expired\"\n    elif days_left is None:\n        status = \"No date\"\n    elif days_left < 90:\n        status = \"Expiring soon\"\n    else:\n        status = \"OK\"\n    statuses.append(status)\n\nprint(statuses)",
+        "hint_contains": "NoneType"
+      },
+      {
+        "code": "docs = [\n    (\"Certificate of Quality\", 400),\n    (\"BSE/TSE Declaration\", 45),\n    (\"Cover Letter\", None),\n    (\"Chain of Custody\", -3),\n]\nstatuses = []\nfor doc_type, days_left in docs:\n    if days_left is None:\n        status = \"No date\"\n    elif days_left < 0:\n        status = \"Expired\"\n    elif days_left < 90:\n        status = \"Expiring soon\"\n    else:\n        status = \"OK\"\n    status = \"?\"\n    statuses.append(status)\n\nprint(statuses)",
+        "hint_contains": "starter line"
+      },
+      {
+        "code": "docs = [\n    (\"Certificate of Quality\", 400),\n    (\"BSE/TSE Declaration\", 45),\n    (\"Cover Letter\", None),\n    (\"Chain of Custody\", -3),\n]\nstatuses = []\nfor doc_type, days_left in docs:\n    if days_left is None:\n        status = \"No date\"\n    elif days_left < 90:\n        status = \"Expiring soon\"\n    elif days_left < 0:\n        status = \"Expired\"\n    else:\n        status = \"OK\"\n    statuses.append(status)\n\nprint(statuses)",
+        "hint_contains": "before days_left < 90"
+      },
+      {
+        "code": "docs = [\n    (\"Certificate of Quality\", 400),\n    (\"BSE/TSE Declaration\", 45),\n    (\"Cover Letter\", None),\n    (\"Chain of Custody\", -3),\n]\nstatuses = []\nfor doc_type, days_left in docs:\n    if days_left is None:\n        status = \"No date\"\n    elif days_left < 0:\n        status = \"Expired\"\n    elif days_left < 90:\n        status = \"Expiring Soon\"\n    else:\n        status = \"OK\"\n    statuses.append(status)\n\nprint(statuses)",
+        "hint_contains": "spelling"
+      },
+      {
+        "code": "docs = [\n    (\"Certificate of Quality\", 400),\n    (\"BSE/TSE Declaration\", 45),\n    (\"Cover Letter\", None),\n    (\"Chain of Custody\", -3),\n]\nstatuses = []\nfor doc_type, days_left in docs:\n    if days_left == \"None\":\n        status = \"No date\"\n    elif days_left < 0:\n        status = \"Expired\"\n    elif days_left < 90:\n        status = \"Expiring soon\"\n    else:\n        status = \"OK\"\n    statuses.append(status)\n\nprint(statuses)",
+        "hint_contains": "TypeError"
+      },
+      {
+        "code": "docs = [\n    (\"Certificate of Quality\", 400),\n    (\"BSE/TSE Declaration\", 45),\n    (\"Cover Letter\", None),\n    (\"Chain of Custody\", -3),\n]\nstatuses = []\nfor doc_type, days_left in docs:\n    if days_left is None:\n        status = \"No date\"\n    if days_left < 0:\n        status = \"Expired\"\n    elif days_left < 90:\n        status = \"Expiring soon\"\n    else:\n        status = \"OK\"\n    statuses.append(status)\n\nprint(statuses)",
+        "hint_contains": "TypeError"
+      }
+    ]
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "q0bQrGhdPm4",
+      "title": "if-elif-else (Khan Academy)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: if statements",
+        "url": "https://docs.python.org/3/tutorial/controlflow.html#if-statements"
+      }
+    ],
+    "used_later": "Your Project 2 notebook's age_flag() picks Green, Yellow, Orange or Red with if, elif and else, and Project 8's dashboard checks if pdf_file is None before it reads anything."
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "id": "dicts",
+  "template": "concept",
+  "title": "Dictionaries and lists of dictionaries",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "What is a dictionary?",
+    "paragraphs": [
+      "A dictionary stores values under labels called **keys**, inside curly braces `{ }`. It's a good fit for what you find in a document: its type, its vendor, its dates."
+    ],
+    "points": [
+      {
+        "title": "Key → value",
+        "text": "`record[\"vendor\"]` reads the value stored under \"vendor\"."
+      },
+      {
+        "title": "Nested",
+        "text": "A value can be another dictionary: `record[\"dates\"][\"issue\"]`."
+      },
+      {
+        "title": "Many records",
+        "text": "A list of dictionaries holds one record per document. `pd.DataFrame()` shows it as a table."
+      }
+    ],
+    "code": "record = {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\"}"
+  },
+  "example": {
+    "heading": "What it looks like",
+    "code": "record = {\n    \"doc_type\": \"Certificate of Quality\",\n    \"vendor\": \"Example Bio Supplies\",\n    \"dates\": {\"issue\": \"2024-03-15\", \"expiry\": \"2027-03-15\"},\n}\nprint(record[\"dates\"][\"issue\"])",
+    "visual": null,
+    "caption": "`record[\"dates\"]` is a dictionary of its own, so `record[\"dates\"][\"issue\"]` goes one level deeper and gives \"2024-03-15\". This record is made up."
+  },
+  "demos": [
+    {
+      "label": "Read a value",
+      "code": "record = {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\"}\nprint(record[\"vendor\"])\nprint(record.get(\"lot_number\"))\nprint(record.get(\"lot_number\", \"not found\"))",
+      "note": "Square brackets read a key. .get() does the same, but gives None (or a default you choose) when the key is missing, instead of a KeyError."
+    },
+    {
+      "label": "Add or change a key",
+      "code": "record = {\"doc_type\": \"Certificate of Quality\"}\nrecord[\"lot_number\"] = \"AB-4417\"\nrecord[\"doc_type\"] = \"Material Description\"\nprint(record)",
+      "note": "Assigning to a new key adds it. Assigning to a key that exists replaces its value."
+    },
+    {
+      "label": "Nested dictionary",
+      "code": "record = {\n    \"doc_type\": \"BSE/TSE Declaration\",\n    \"dates\": {\"issue\": \"2023-06-01\", \"expiry\": \"2026-06-01\"},\n}\ndates = record[\"dates\"]\nprint(dates)\nprint(dates[\"expiry\"])",
+      "note": "Read the outer key first, then the inner key."
+    },
+    {
+      "label": "List of dicts as a table",
+      "code": "import pandas as pd\n\nrecords = [\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\", \"issue_date\": \"2025-01-10\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Sample Vials Co.\", \"issue_date\": \"2024-03-15\"},\n    {\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"issue_date\": \"2022-08-30\"},\n]\ndf = pd.DataFrame(records)\nprint(df)",
+      "note": "Each dictionary becomes a row, and each key becomes a column. In Colab, put df on the last line of a cell instead of print(df) to see a formatted table."
+    }
+  ],
+  "try": {
+    "prompt": "Add a third record to `records`: a **Chain of Custody** from \"Demo Filters Ltd.\", issued \"2022-08-30\". Use the same three keys. Then build `df` from `records` with `pd.DataFrame()`.",
+    "starter": "import pandas as pd\n\nrecords = [\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\", \"issue_date\": \"2025-01-10\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Sample Vials Co.\", \"issue_date\": \"2024-03-15\"},\n]\n# 1. append the Chain of Custody record\n# 2. make df from records\n",
+    "solution": "import pandas as pd\n\nrecords = [\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\", \"issue_date\": \"2025-01-10\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Sample Vials Co.\", \"issue_date\": \"2024-03-15\"},\n]\nrecords.append({\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"issue_date\": \"2022-08-30\"})\ndf = pd.DataFrame(records)\nprint(df)",
+    "checks": [
+      {
+        "expr": "records is not None",
+        "expect": true,
+        "hint": ".append() changes the list in place and gives back None. Write records.append(...) on its own line, not records = records.append(...)."
+      },
+      {
+        "expr": "len(records) == 3",
+        "expect": true,
+        "hint": "records should hold 3 dictionaries. Add the new one to the end with records.append({...})."
+      },
+      {
+        "expr": "records[-1].get(\"doc_type\") == \"Chain of Custody\"",
+        "expect": true,
+        "hint": "The new record should be a dictionary whose \"doc_type\" key holds \"Chain of Custody\". Check the curly braces, the key name and the spelling."
+      },
+      {
+        "expr": "records[-1].get(\"vendor\") == \"Demo Filters Ltd.\" and records[-1].get(\"issue_date\") == \"2022-08-30\"",
+        "expect": true,
+        "hint": "The new record needs \"vendor\": \"Demo Filters Ltd.\" and \"issue_date\": \"2022-08-30\", with the same key names as the other two records."
+      },
+      {
+        "expr": "type(df).__name__ == \"DataFrame\"",
+        "expect": true,
+        "hint": "Make the table with df = pd.DataFrame(records)."
+      },
+      {
+        "expr": "df.shape == (3, 3) and df.loc[2, \"vendor\"] == \"Demo Filters Ltd.\"",
+        "expect": true,
+        "hint": "df should have 3 rows and 3 columns, with Demo Filters Ltd. in the last row. Build df after you append the new record, so it includes it."
+      }
+    ],
+    "expect_stdout": null,
+    "stdout_hint": "",
+    "wrong": [
+      {
+        "code": "import pandas as pd\n\nrecords = [\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\", \"issue_date\": \"2025-01-10\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Sample Vials Co.\", \"issue_date\": \"2024-03-15\"},\n]\ndf = pd.DataFrame(records)",
+        "hint_contains": "records.append"
+      },
+      {
+        "code": "import pandas as pd\n\nrecords = [\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\", \"issue_date\": \"2025-01-10\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Sample Vials Co.\", \"issue_date\": \"2024-03-15\"},\n]\nrecords = records.append({\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"issue_date\": \"2022-08-30\"})\ndf = pd.DataFrame(records)",
+        "hint_contains": "in place"
+      },
+      {
+        "code": "import pandas as pd\n\nrecords = [\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\", \"issue_date\": \"2025-01-10\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Sample Vials Co.\", \"issue_date\": \"2024-03-15\"},\n]\nrecords.append(\"Chain of Custody\")",
+        "hint_contains": "curly braces"
+      },
+      {
+        "code": "import pandas as pd\n\nrecords = [\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\", \"issue_date\": \"2025-01-10\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Sample Vials Co.\", \"issue_date\": \"2024-03-15\"},\n]\nrecords.append({\"doc_type\": \"Chain of Custody\", \"Vendor\": \"Demo Filters Ltd.\", \"date\": \"2022-08-30\"})\ndf = pd.DataFrame(records)",
+        "hint_contains": "same key names"
+      },
+      {
+        "code": "import pandas as pd\n\nrecords = [\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\", \"issue_date\": \"2025-01-10\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Sample Vials Co.\", \"issue_date\": \"2024-03-15\"},\n]\ndf = pd.DataFrame(records)\nrecords.append({\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"issue_date\": \"2022-08-30\"})",
+        "hint_contains": "after you append"
+      },
+      {
+        "code": "import pandas as pd\n\nrecords = [\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Example Bio Supplies\", \"issue_date\": \"2025-01-10\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Sample Vials Co.\", \"issue_date\": \"2024-03-15\"},\n]\nrecords.append({\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"issue_date\": \"2022-08-30\"})",
+        "hint_contains": "pd.DataFrame(records)"
+      }
+    ]
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "daefaLgNkw0",
+      "title": "Dictionaries: Working with Key-Value Pairs (Corey Schafer)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: dictionaries",
+        "url": "https://docs.python.org/3/tutorial/datastructures.html#dictionaries"
+      },
+      {
+        "label": "pandas: 10 minutes to pandas",
+        "url": "https://pandas.pydata.org/docs/user_guide/10min.html"
+      }
+    ],
+    "used_later": "Projects 5 and 7 show results as tables with pd.DataFrame(), and Project 7 keeps each page as a dictionary in a list, like {\"page_num\": i, \"text\": p}."
+  }
+}

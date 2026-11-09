@@ -1,0 +1,127 @@
+{
+  "id": "variables",
+  "template": "concept",
+  "title": "Variables and data types",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "What is a variable?",
+    "paragraphs": [
+      "A variable is a name for a value, created with `=`. Every value also has a **type**, and the type decides what you can do with it: numbers add up, but text works differently."
+    ],
+    "points": [
+      {
+        "title": "str",
+        "text": "Text, inside quotes: `\"Cytiva\"`, `\"14\"`."
+      },
+      {
+        "title": "int and float",
+        "text": "Whole numbers like `14`, and decimals like `2.5`."
+      },
+      {
+        "title": "bool",
+        "text": "`True` or `False`, with a capital letter and no quotes."
+      }
+    ],
+    "code": "vendor = \"Cytiva\"\npage_count = 14\nprint(type(page_count))"
+  },
+  "example": {
+    "heading": "What it looks like",
+    "code": "vendor = \"Cytiva\"          # str\npage_count = 14            # int\nyears_old = 2.5            # float\ndate_found = True          # bool",
+    "visual": null,
+    "caption": "Four variables, four types. Quotes make a `str`, a number without a dot is an `int`, a dot makes a `float`, and `True` or `False` is a `bool`."
+  },
+  "demos": [
+    {
+      "label": "Check a type",
+      "code": "vendor = \"Cytiva\"\npage_count = 14\nyears_old = 2.5\ndate_found = True\nprint(type(vendor))\nprint(type(page_count))\nprint(type(years_old))\nprint(type(date_found))",
+      "note": "type() tells you what kind of value a variable holds."
+    },
+    {
+      "label": "Numbers vs text",
+      "code": "print(14 + 1)\nprint(\"14\" + \"1\")",
+      "note": "With numbers, + adds. With text, + glues the pieces together, so \"14\" + \"1\" gives \"141\"."
+    },
+    {
+      "label": "Convert a type",
+      "code": "pages_text = \"14\"\npage_count = int(pages_text)\nprint(page_count + 1)\nprint(\"Pages: \" + str(page_count))",
+      "note": "int() turns text into a whole number, and str() turns a number back into text. float() works the same way for decimals."
+    },
+    {
+      "label": "Change a value",
+      "code": "date_found = False\nprint(date_found)\ndate_found = True\nprint(date_found)",
+      "note": "Assigning again replaces the old value. The variable keeps the newest one."
+    }
+  ],
+  "try": {
+    "prompt": "A page header says the SDF has 14 pages, but the number came in as text: `pages_text`. Make three variables: `page_count`, the number 14 as an `int`; `next_page`, which is `page_count + 1`; and `date_found`, the bool `True`.",
+    "starter": "pages_text = \"14\"\n# 1. page_count: turn pages_text into an int\n# 2. next_page: page_count + 1\n# 3. date_found: the bool True\n",
+    "solution": "pages_text = \"14\"\npage_count = int(pages_text)\nnext_page = page_count + 1\ndate_found = True",
+    "checks": [
+      {
+        "expr": "type(page_count) == int",
+        "expect": true,
+        "hint": "page_count should be a whole number (an int), but type(page_count) isn't int yet. Use int(pages_text) to turn the text \"14\" into the number 14."
+      },
+      {
+        "expr": "page_count == 14",
+        "expect": true,
+        "hint": "page_count should stay 14. Put the + 1 only in next_page."
+      },
+      {
+        "expr": "next_page == 15",
+        "expect": true,
+        "hint": "next_page should be 15. Add 1 to page_count (the number), not to pages_text (the text)."
+      },
+      {
+        "expr": "date_found is True",
+        "expect": true,
+        "hint": "date_found should be the bool True: a capital T and no quotes. \"True\" in quotes is a str, not a bool."
+      }
+    ],
+    "expect_stdout": null,
+    "stdout_hint": "",
+    "wrong": [
+      {
+        "code": "pages_text = \"14\"\npage_count = pages_text\nnext_page = 15\ndate_found = True",
+        "hint_contains": "int(pages_text)"
+      },
+      {
+        "code": "pages_text = \"14\"\npage_count = int(pages_text)\npage_count = page_count + 1\nnext_page = page_count\ndate_found = True",
+        "hint_contains": "stay 14"
+      },
+      {
+        "code": "pages_text = \"14\"\npage_count = int(pages_text)\nnext_page = pages_text + \"1\"\ndate_found = True",
+        "hint_contains": "page_count (the number)"
+      },
+      {
+        "code": "pages_text = \"14\"\npage_count = int(pages_text)\nnext_page = page_count + 1\ndate_found = \"True\"",
+        "hint_contains": "no quotes"
+      },
+      {
+        "code": "pages_text = \"14\"\npage_count = int(pages_text)\nnext_page = pages_text + 1\ndate_found = True",
+        "hint_contains": "TypeError"
+      },
+      {
+        "code": "pages_text = \"14\"\npage_count = int(pages_text)\nnext_page = page_count + 1\ndate_found = true",
+        "hint_contains": "NameError"
+      }
+    ]
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "cQT33yu9pY8",
+      "title": "Python Variables (Programming with Mosh)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: numbers",
+        "url": "https://docs.python.org/3/tutorial/introduction.html#numbers"
+      },
+      {
+        "label": "Python tutorial: text",
+        "url": "https://docs.python.org/3/tutorial/introduction.html#text"
+      }
+    ],
+    "used_later": "Every notebook from Project 3 on keeps page text, page numbers and dates in variables, and a wrong type is a common cause of the TypeError you met in Step 1."
+  }
+}
