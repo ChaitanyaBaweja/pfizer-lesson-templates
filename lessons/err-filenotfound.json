@@ -1,0 +1,76 @@
+{
+  "id": "err-filenotfound",
+  "template": "fix-error",
+  "title": "FileNotFoundError",
+  "kicker": "Python for SDFs · Fix the error",
+  "number": 7,
+  "error_type": "FileNotFoundError",
+  "code": "import json\nwith open(\"/content/sdf-dates.json\") as f:\n    dates = json.load(f)\nprint(dates)",
+  "traceback": [
+    "---------------------------------------------------------------------------",
+    "FileNotFoundError                         Traceback (most recent call last)",
+    "<ipython-input-2> in <cell line: 0>()",
+    "      1 import json",
+    "----> 2 with open(\"/content/sdf-dates.json\") as f:",
+    "      3     dates = json.load(f)",
+    "      4 print(dates)",
+    "",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/content/sdf-dates.json'"
+  ],
+  "notes": [
+    {
+      "label": "FileNotFoundError",
+      "text": "The type of error. Python looked for a file at that exact path and found nothing there."
+    },
+    {
+      "label": "[Errno 2] No such file or directory",
+      "text": "The same news from the operating system. Errno 2 is its code for a missing file."
+    },
+    {
+      "label": "'/content/sdf-dates.json'",
+      "text": "The path Python tried. Compare it letter by letter with Colab's Files panel, where the upload is called sdf_dates.json, with underscores. If the names match, check the file is still there: uploads disappear when the runtime resets."
+    }
+  ],
+  "arrow_line": 2,
+  "fixes": [
+    {
+      "label": "with open(\"/content/sdf_dates.json\") as f:",
+      "ok": true,
+      "title": "Best fix",
+      "feedback": "The path now matches the uploaded file, sdf_dates.json, exactly, so the cell loads it and prints the dates. The safest way to get a path right is to right-click the file in the Files panel, choose Copy path, and paste it.",
+      "fixed_code": "# Test fixture, not shown to students: in Colab this file exists because you uploaded it.\nimport os, json\nos.makedirs(\"/content\", exist_ok=True)\nwith open(\"/content/sdf_dates.json\", \"w\") as f:\n    json.dump([\"2023-04-12\", \"2021-09-30\"], f)\n# The fixed cell:\nimport json\nwith open(\"/content/sdf_dates.json\") as f:\n    dates = json.load(f)\nprint(dates)"
+    },
+    {
+      "label": "with open(\"sdf-dates.json\") as f:",
+      "ok": false,
+      "title": "Still a FileNotFoundError",
+      "feedback": "Colab starts in the /content folder, so leaving it out changes nothing. The name still has dashes where the real file has underscores.",
+      "fixed_code": "import json\nwith open(\"sdf-dates.json\") as f:\n    dates = json.load(f)\nprint(dates)"
+    },
+    {
+      "label": "with open(\"/content/sdf-dates.json\", \"w\") as f:",
+      "ok": false,
+      "title": "A new error, and a new empty file",
+      "feedback": "`\"w\"` opens a file for writing. Python creates an empty sdf-dates.json, and then `json.load` fails because a file opened for writing can't be read.",
+      "fixed_code": "import json\nwith open(\"/content/sdf-dates.json\", \"w\") as f:\n    dates = json.load(f)\nprint(dates)"
+    }
+  ],
+  "learn": {
+    "video": {
+      "youtube_id": "6HFlwqK3oeo",
+      "title": "How to Upload Files to Google Colab (Data Professor)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: reading and writing files",
+        "url": "https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files"
+      },
+      {
+        "label": "Python docs: FileNotFoundError",
+        "url": "https://docs.python.org/3/library/exceptions.html#FileNotFoundError"
+      }
+    ],
+    "used_later": "8 of 8 · ModuleNotFoundError"
+  },
+  "_note": "traceback from IPython 7.34 / Python 3.12 (kernel output, only the temp-file path shortened to <ipython-input-2>); confirm against a live Colab run. The ok fix's fixed_code starts with a test-only fixture that creates /content/sdf_dates.json, because the uploaded file doesn't exist in Pyodide"
+}

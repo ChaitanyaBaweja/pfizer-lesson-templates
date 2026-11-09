@@ -1,0 +1,67 @@
+{
+  "id": "err-name",
+  "template": "fix-error",
+  "title": "NameError",
+  "kicker": "Python for SDFs · Fix the error",
+  "number": 3,
+  "error_type": "NameError",
+  "code": "print(f\"Found {len(issue_dates)} dates\")\nfor date in issue_dates:\n    print(date)",
+  "traceback": [
+    "---------------------------------------------------------------------------",
+    "NameError                                 Traceback (most recent call last)",
+    "<ipython-input-2> in <cell line: 0>()",
+    "----> 1 print(f\"Found {len(issue_dates)} dates\")",
+    "      2 for date in issue_dates:",
+    "      3     print(date)",
+    "",
+    "NameError: name 'issue_dates' is not defined"
+  ],
+  "notes": [
+    {
+      "label": "NameError",
+      "text": "The type of error. Python met a name that has never been given a value in this session."
+    },
+    {
+      "label": "name 'issue_dates' is not defined",
+      "text": "The name it couldn't find. In this notebook, `issue_dates` is created in the cell above this one. That cell hasn't run since the runtime started, so Python has never seen the name. It happens after a restart, or when you run cells out of order."
+    }
+  ],
+  "arrow_line": 1,
+  "fixes": [
+    {
+      "label": "Run the cell above that creates issue_dates, then this one",
+      "ok": true,
+      "title": "Best fix",
+      "feedback": "Python only knows what has already run in this session, not what's written on the page. Run the earlier cell first (Runtime > Run before runs every cell above this one), then this cell. It prints `Found 2 dates` and the two dates.",
+      "fixed_code": "issue_dates = [\"2023-04-12\", \"2021-09-30\"]\nprint(f\"Found {len(issue_dates)} dates\")\nfor date in issue_dates:\n    print(date)"
+    },
+    {
+      "label": "Add issue_dates = [] as the first line of this cell",
+      "ok": false,
+      "title": "The error goes away, but the answer is wrong",
+      "feedback": "The cell now prints `Found 0 dates`, because you replaced the real dates with an empty list. The cell that finds the dates still hasn't run.",
+      "fixed_code": "issue_dates = []\nprint(f\"Found {len(issue_dates)} dates\")\nfor date in issue_dates:\n    print(date)"
+    },
+    {
+      "label": "Restart the session, then run only this cell",
+      "ok": false,
+      "title": "Still a NameError",
+      "feedback": "A restart clears every variable. Python knows even less afterwards, so this cell fails the same way until the cell above runs.",
+      "fixed_code": "print(f\"Found {len(issue_dates)} dates\")\nfor date in issue_dates:\n    print(date)"
+    }
+  ],
+  "learn": {
+    "video": {
+      "youtube_id": "WUoCSkSW4cs",
+      "title": "Debugging with stack traces (Khan Academy)"
+    },
+    "links": [
+      {
+        "label": "Python docs: NameError",
+        "url": "https://docs.python.org/3/library/exceptions.html#NameError"
+      }
+    ],
+    "used_later": "4 of 8 · TypeError"
+  },
+  "_note": "traceback from IPython 7.34 / Python 3.12 (kernel output, only the temp-file path shortened to <ipython-input-2>); confirm against a live Colab run"
+}

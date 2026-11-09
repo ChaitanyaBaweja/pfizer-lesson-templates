@@ -1,0 +1,72 @@
+{
+  "id": "err-indentation",
+  "template": "fix-error",
+  "title": "IndentationError",
+  "kicker": "Python for SDFs · Fix the error",
+  "number": 2,
+  "error_type": "IndentationError",
+  "code": "lot_numbers = [\"A2307-114\", \"B2311-052\", \"C2402-007\"]\nfor lot in lot_numbers:\nprint(lot)",
+  "traceback": [
+    "  File \"<ipython-input-2>\", line 3",
+    "    print(lot)",
+    "    ^",
+    "IndentationError: expected an indented block after 'for' statement on line 2",
+    ""
+  ],
+  "notes": [
+    {
+      "label": "IndentationError",
+      "text": "The type of error. The spaces at the start of a line aren't what Python expects. Like a SyntaxError, it stops the whole cell before anything runs."
+    },
+    {
+      "label": "expected an indented block after 'for' statement on line 2",
+      "text": "The reason. The line after a `for ...:` line has to be pushed in, usually by 4 spaces. That's how Python knows which lines repeat."
+    },
+    {
+      "label": "on line 2",
+      "text": "The message says line 2 because that's the for line that needs a body. The line to fix is line 3."
+    },
+    {
+      "label": "line 3, and the ^",
+      "text": "There's no ----> arrow here either. The top line names line 3, and the ^ sits under the start of `print(lot)`, the line that should be indented."
+    }
+  ],
+  "arrow_line": 3,
+  "fixes": [
+    {
+      "label": "    print(lot)",
+      "ok": true,
+      "title": "Best fix",
+      "feedback": "Four spaces tell Python that `print(lot)` belongs to the loop, so it prints all three lot numbers. Colab indents for you when you press Enter after a colon. Pasted code is where indents usually go wrong.",
+      "fixed_code": "lot_numbers = [\"A2307-114\", \"B2311-052\", \"C2402-007\"]\nfor lot in lot_numbers:\n    print(lot)"
+    },
+    {
+      "label": "    for lot in lot_numbers:",
+      "ok": false,
+      "title": "Wrong line",
+      "feedback": "Now line 2 is indented when nothing asked for it, so you get IndentationError: unexpected indent. Line 3 is the one that needs to move in.",
+      "fixed_code": "lot_numbers = [\"A2307-114\", \"B2311-052\", \"C2402-007\"]\n    for lot in lot_numbers:\nprint(lot)"
+    },
+    {
+      "label": "for lot in lot_numbers",
+      "ok": false,
+      "title": "Now it's a SyntaxError",
+      "feedback": "The colon was right. Without it Python reports expected ':', and line 3 still isn't indented.",
+      "fixed_code": "lot_numbers = [\"A2307-114\", \"B2311-052\", \"C2402-007\"]\nfor lot in lot_numbers\nprint(lot)"
+    }
+  ],
+  "learn": {
+    "video": {
+      "youtube_id": "WUoCSkSW4cs",
+      "title": "Debugging with stack traces (Khan Academy)"
+    },
+    "links": [
+      {
+        "label": "Python docs: indentation",
+        "url": "https://docs.python.org/3/reference/lexical_analysis.html#indentation"
+      }
+    ],
+    "used_later": "3 of 8 · NameError"
+  },
+  "_note": "traceback from IPython 7.34 / Python 3.12 (kernel output, only the temp-file path shortened to <ipython-input-2>); confirm against a live Colab run. SyntaxError and IndentationError are reported before the cell runs, so IPython prints a File/line header and a ^ caret instead of a ----> arrow"
+}

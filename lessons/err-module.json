@@ -1,0 +1,75 @@
+{
+  "id": "err-module",
+  "template": "fix-error",
+  "title": "ModuleNotFoundError",
+  "kicker": "Python for SDFs · Fix the error",
+  "number": 8,
+  "error_type": "ModuleNotFoundError",
+  "code": "import fitz\ndoc = fitz.open(\"/content/sample-sdf-document.pdf\")\nprint(doc.page_count)",
+  "traceback": [
+    "---------------------------------------------------------------------------",
+    "ModuleNotFoundError                       Traceback (most recent call last)",
+    "<ipython-input-2> in <cell line: 0>()",
+    "----> 1 import fitz",
+    "      2 doc = fitz.open(\"/content/sample-sdf-document.pdf\")",
+    "      3 print(doc.page_count)",
+    "",
+    "ModuleNotFoundError: No module named 'fitz'"
+  ],
+  "notes": [
+    {
+      "label": "ModuleNotFoundError",
+      "text": "The type of error. Python looked for a library called fitz and it isn't installed in this Colab session."
+    },
+    {
+      "label": "No module named 'fitz'",
+      "text": "The name from your import line. `fitz` is the import name of PyMuPDF, a PDF library that Colab doesn't come with."
+    },
+    {
+      "label": "In Colab",
+      "text": "Below this error, Colab also prints a NOTE that suggests installing with `!pip`. That's Colab's hint for exactly this case."
+    }
+  ],
+  "arrow_line": 1,
+  "fixes": [
+    {
+      "label": "!pip install pymupdf   (in a cell above; run it first)",
+      "ok": true,
+      "title": "Best fix",
+      "feedback": "The install cell downloads PyMuPDF into this Colab session, and then `import fitz` works. A new runtime starts without it, so keep the install cell at the top and run it each time you connect.",
+      "fixed_code": "# Test fixture, not shown to students: stands in for running `!pip install pymupdf` in a cell above, which Pyodide can't do.\nimport sys, types\nsys.modules[\"fitz\"] = types.SimpleNamespace(open=lambda path: types.SimpleNamespace(page_count=3))\n# The fixed cell, after the install cell has run:\nimport fitz\ndoc = fitz.open(\"/content/sample-sdf-document.pdf\")\nprint(doc.page_count)"
+    },
+    {
+      "label": "!pip install fitz",
+      "ok": false,
+      "title": "Wrong library",
+      "feedback": "PyPI has an unrelated, unmaintained package called fitz. Installing it doesn't give you PyMuPDF, and PyMuPDF's docs warn against it. Install pymupdf. `fitz` is only the name you import.",
+      "fixed_code": "!pip install fitz\nimport fitz\ndoc = fitz.open(\"/content/sample-sdf-document.pdf\")\nprint(doc.page_count)"
+    },
+    {
+      "label": "import pymupdf",
+      "ok": false,
+      "title": "Still a ModuleNotFoundError",
+      "feedback": "Recent PyMuPDF versions can be imported as pymupdf too, but only after the library is installed. Changing the name doesn't install anything, and line 2 still uses fitz.",
+      "fixed_code": "import pymupdf\ndoc = fitz.open(\"/content/sample-sdf-document.pdf\")\nprint(doc.page_count)"
+    }
+  ],
+  "learn": {
+    "video": {
+      "youtube_id": "BfJxKKGl8lg",
+      "title": "Importing modules (Khan Academy)"
+    },
+    "links": [
+      {
+        "label": "PyMuPDF docs: installation, and the fitz name",
+        "url": "https://pymupdf.readthedocs.io/en/latest/installation.html#problems-after-installation"
+      },
+      {
+        "label": "Python tutorial: modules",
+        "url": "https://docs.python.org/3/tutorial/modules.html"
+      }
+    ],
+    "used_later": "Project 3's notebooks open with `!pip install pymupdf`, and the notebooks in Projects 7 and 8 start with their own install cells. When an import fails, check that the install cell ran in this session."
+  },
+  "_note": "traceback from IPython 7.34 / Python 3.12 (kernel output, only the temp-file path shortened to <ipython-input-2>); confirm against a live Colab run. Colab adds a NOTE about !pip/!apt below this error that the local kernel doesn't print; it is described in notes, not added to the traceback. The ok fix's fixed_code starts with a test-only stub for fitz, because Pyodide can't run !pip; Pyodide 0.26.4 doesn't ship fitz, so the broken cell raises ModuleNotFoundError there too"
+}

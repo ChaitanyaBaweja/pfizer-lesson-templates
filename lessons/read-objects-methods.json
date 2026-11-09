@@ -1,0 +1,86 @@
+{
+  "id": "read-objects-methods",
+  "template": "read-code",
+  "title": "Objects, methods and keyword arguments",
+  "kicker": "Python for SDFs · Read the code",
+  "lines": [
+    {
+      "code": "doc = fitz.open(\"/content/sample-sdf-document.pdf\")",
+      "title": "Call a function from a library",
+      "text": "The dot reaches inside the fitz library for its `open` function (the `import fitz` cell already ran). It gives back an object, a Document, that holds the whole PDF."
+    },
+    {
+      "code": "print(doc.page_count)",
+      "title": "Read an attribute",
+      "text": "An attribute is a value stored on an object. There are no parentheses: you read it, you don't call it. `page_count` is the number of pages in the document."
+    },
+    {
+      "code": "page = doc[0]",
+      "title": "Pick the first page",
+      "text": "A Document works like a list of pages, so `[0]` gives you the first one. `page` is another object, a Page."
+    },
+    {
+      "code": "words = page.get_text(\"words\")",
+      "title": "Call a method with an argument",
+      "text": "A method is a function that belongs to an object, and the parentheses call it. The argument `\"words\"` asks for a list with one entry per word, including where each word sits on the page."
+    },
+    {
+      "code": "client = genai.Client(api_key=userdata.get('GEMINI_API_KEY'))",
+      "title": "Create an object with a keyword argument",
+      "text": "`genai.Client(...)` builds a new object that talks to Gemini. `api_key=` is a keyword argument: you name the setting, then give its value. The value comes from another method call, which reads your key from Colab's Secrets."
+    },
+    {
+      "code": "response = client.models.generate_content(model=\"gemini-3.5-flash-lite\", contents=page.get_text())",
+      "title": "Follow the dots, pass two keyword arguments",
+      "text": "Read the dots from left to right. The client has a `models` part, and that part has a `generate_content` method. `model=` picks the Gemini model, and `contents=` is what you send it, here the page's text."
+    },
+    {
+      "code": "print(response.text)",
+      "title": "Read the answer",
+      "text": "`response` is an object too. Its `text` attribute holds Gemini's reply as a plain string."
+    }
+  ],
+  "predict": {
+    "question": "The sample SDF has 3 pages. What does **line 2** print?",
+    "options": [
+      {
+        "label": "3",
+        "ok": true,
+        "feedback": "Yes. `page_count` is an attribute that holds how many pages there are. Counts start at 1. It's positions, like `doc[0]`, that start at 0."
+      },
+      {
+        "label": "2",
+        "ok": false,
+        "feedback": "That's the position of the last page, because positions start at 0. `page_count` is a count, so it's 3."
+      },
+      {
+        "label": "An error, because page_count needs ()",
+        "ok": false,
+        "feedback": "`page_count` is an attribute, not a method, so it takes no parentheses. Writing `doc.page_count()` is what would cause an error."
+      },
+      {
+        "label": "The text of all 3 pages",
+        "ok": false,
+        "feedback": "Getting text takes a method call, `get_text()`, on each page. `page_count` holds only a number."
+      }
+    ]
+  },
+  "verify": null,
+  "learn": {
+    "video": {
+      "youtube_id": "yGVBaM8o02E",
+      "title": "Methods and encapsulation (Khan Academy)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: keyword arguments",
+        "url": "https://docs.python.org/3/tutorial/controlflow.html#keyword-arguments"
+      },
+      {
+        "label": "PyMuPDF docs: Document.page_count",
+        "url": "https://pymupdf.readthedocs.io/en/latest/document.html#Document.page_count"
+      }
+    ],
+    "used_later": "Project 3 opens SDFs with `fitz.open` and reads `doc.page_count` and `page.get_text(\"words\")`. In Projects 7 and 8, every Gemini call goes through the same `client.models.generate_content(...)` line."
+  }
+}

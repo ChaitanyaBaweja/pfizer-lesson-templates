@@ -51,17 +51,17 @@
   ],
   "learn": {
     "video": {
-      "youtube_id": "",
-      "title": "Reading Python errors"
+      "youtube_id": "nf26Yv5JTOc",
+      "title": "Dictionaries (Khan Academy)"
     },
     "links": [
       {
-        "label": "Python docs: dictionaries and .get()",
-        "url": ""
+        "label": "Python docs: dict.get()",
+        "url": "https://docs.python.org/3/library/stdtypes.html#dict.get"
       },
       {
-        "label": "Lecture or article",
-        "url": ""
+        "label": "Python docs: KeyError",
+        "url": "https://docs.python.org/3/library/exceptions.html#KeyError"
       }
     ],
     "used_later": "6 of 8 · IndexError"

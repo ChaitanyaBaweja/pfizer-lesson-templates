@@ -1,0 +1,76 @@
+{
+  "id": "err-type",
+  "template": "fix-error",
+  "title": "TypeError",
+  "kicker": "Python for SDFs · Fix the error",
+  "number": 4,
+  "error_type": "TypeError",
+  "code": "issue_date = \"2023-04-12\"\nissue_year = issue_date[:4]\nage = 2026 - issue_year\nprint(age, \"years old\")",
+  "traceback": [
+    "---------------------------------------------------------------------------",
+    "TypeError                                 Traceback (most recent call last)",
+    "<ipython-input-2> in <cell line: 0>()",
+    "      1 issue_date = \"2023-04-12\"",
+    "      2 issue_year = issue_date[:4]",
+    "----> 3 age = 2026 - issue_year",
+    "      4 print(age, \"years old\")",
+    "",
+    "TypeError: unsupported operand type(s) for -: 'int' and 'str'"
+  ],
+  "notes": [
+    {
+      "label": "TypeError",
+      "text": "The type of error. An operation got a kind of value it can't work with."
+    },
+    {
+      "label": "unsupported operand type(s) for -",
+      "text": "The operation that failed: the subtraction on line 3."
+    },
+    {
+      "label": "'int' and 'str'",
+      "text": "The two types it got. `2026` is a number (an int), but `issue_year` is text (a str). Slicing a string gives you a string: `\"2023\"`, not `2023`."
+    }
+  ],
+  "arrow_line": 3,
+  "fixes": [
+    {
+      "label": "age = 2026 - int(issue_year)",
+      "ok": true,
+      "title": "Best fix",
+      "feedback": "`int()` turns the text \"2023\" into the number 2023, so the subtraction works. Output: `3 years old`",
+      "fixed_code": "issue_date = \"2023-04-12\"\nissue_year = issue_date[:4]\nage = 2026 - int(issue_year)\nprint(age, \"years old\")"
+    },
+    {
+      "label": "age = \"2026\" - issue_year",
+      "ok": false,
+      "title": "Still a TypeError",
+      "feedback": "Now both sides are text, and Python can't subtract text from text either. The message changes to 'str' and 'str'.",
+      "fixed_code": "issue_date = \"2023-04-12\"\nissue_year = issue_date[:4]\nage = \"2026\" - issue_year\nprint(age, \"years old\")"
+    },
+    {
+      "label": "age = str(2026) + issue_year",
+      "ok": false,
+      "title": "The error goes away, but the answer is wrong",
+      "feedback": "`+` on two strings glues them together, so this prints `20262023 years old`. To do math, both values need to be numbers.",
+      "fixed_code": "issue_date = \"2023-04-12\"\nissue_year = issue_date[:4]\nage = str(2026) + issue_year\nprint(age, \"years old\")"
+    }
+  ],
+  "learn": {
+    "video": {
+      "youtube_id": "y-FlANhhNiA",
+      "title": "Type casting (Khan Academy)"
+    },
+    "links": [
+      {
+        "label": "Python docs: int()",
+        "url": "https://docs.python.org/3/library/functions.html#int"
+      },
+      {
+        "label": "Python docs: TypeError",
+        "url": "https://docs.python.org/3/library/exceptions.html#TypeError"
+      }
+    ],
+    "used_later": "5 of 8 · KeyError"
+  },
+  "_note": "traceback from IPython 7.34 / Python 3.12 (kernel output, only the temp-file path shortened to <ipython-input-2>); confirm against a live Colab run"
+}

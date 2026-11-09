@@ -1,0 +1,71 @@
+{
+  "id": "err-index",
+  "template": "fix-error",
+  "title": "IndexError",
+  "kicker": "Python for SDFs · Fix the error",
+  "number": 6,
+  "error_type": "IndexError",
+  "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nlast_type = doc_types[3]\nprint(last_type)",
+  "traceback": [
+    "---------------------------------------------------------------------------",
+    "IndexError                                Traceback (most recent call last)",
+    "<ipython-input-2> in <cell line: 0>()",
+    "      1 doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]",
+    "----> 2 last_type = doc_types[3]",
+    "      3 print(last_type)",
+    "",
+    "IndexError: list index out of range"
+  ],
+  "notes": [
+    {
+      "label": "IndexError",
+      "text": "The type of error. You asked a list for a position it doesn't have."
+    },
+    {
+      "label": "list index out of range",
+      "text": "The reason. This list has 3 items, at positions 0, 1 and 2. Position 3 would be a fourth item, and there isn't one."
+    }
+  ],
+  "arrow_line": 2,
+  "fixes": [
+    {
+      "label": "last_type = doc_types[-1]",
+      "ok": true,
+      "title": "Best fix",
+      "feedback": "`-1` means the last item, however long the list is. `doc_types[2]` works for this list too, but `[-1]` keeps working when the next SDF has more document types. Output: `BSE/TSE Declaration`",
+      "fixed_code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nlast_type = doc_types[-1]\nprint(last_type)"
+    },
+    {
+      "label": "last_type = doc_types[len(doc_types)]",
+      "ok": false,
+      "title": "Still an IndexError",
+      "feedback": "`len(doc_types)` is 3, so this asks for position 3 again. The last position is always one less than the length.",
+      "fixed_code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nlast_type = doc_types[len(doc_types)]\nprint(last_type)"
+    },
+    {
+      "label": "last_type = doc_types[3:]",
+      "ok": false,
+      "title": "The error goes away, but the answer is wrong",
+      "feedback": "A slice never raises an IndexError. It returns whatever is in that range, and nothing starts at position 3, so this prints an empty list: `[]`.",
+      "fixed_code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nlast_type = doc_types[3:]\nprint(last_type)"
+    }
+  ],
+  "learn": {
+    "video": {
+      "youtube_id": "wpmXETzX6xc",
+      "title": "Fix Python Index Error: List Index Out of Range (Jenny's Lectures)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: lists and indexing",
+        "url": "https://docs.python.org/3/tutorial/introduction.html#lists"
+      },
+      {
+        "label": "Python docs: IndexError",
+        "url": "https://docs.python.org/3/library/exceptions.html#IndexError"
+      }
+    ],
+    "used_later": "7 of 8 · FileNotFoundError"
+  },
+  "_note": "traceback from IPython 7.34 / Python 3.12 (kernel output, only the temp-file path shortened to <ipython-input-2>); confirm against a live Colab run"
+}

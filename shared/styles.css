@@ -210,7 +210,7 @@ textarea:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
   border: 2px solid var(--out-line); background: #fff; color: var(--ink);
   font: 600 14px var(--sans); text-align: left; cursor: pointer; overflow-wrap: anywhere;
 }
-.choice.mono { font: 400 13.5px/1.5 var(--mono); }
+.choice.mono { font: 400 13.5px/1.5 var(--mono); white-space: pre-wrap; } /* keep leading spaces: indentation is the answer */
 .choice.ok { border-color: var(--ok-fg); background: var(--ok-bg); }
 .choice.no { border-color: #b85a0b; background: var(--warn-bg); }
 .choices-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -254,7 +254,7 @@ textarea:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 .tl.dim { color: #9aa3b5; }
 .tl.head, .tl.last { color: #f5a35c; }
 .tl.hl.last { background: #4a3420; }
-.tl.hl.arrow { background: #34407a; }
+.tl.hl.arrow, .tl.hl.file, .tl.hl.src, .tl.hl.caret { background: #34407a; }
 .note-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .note-card { background: var(--warn-bg); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
 .note-card .nc-label { font: 500 14px var(--mono); color: var(--warn-fg); overflow-wrap: anywhere; }

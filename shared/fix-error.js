@@ -1,12 +1,13 @@
 // Template C: fix the error. Reads ?lesson=<id>, renders 4 tabs:
 // Read the error / Find the line / Fix it / Learn more.
-import { classifyTrace, codeLineCount } from "./trace.js";
+import { classifyTrace, codeLineCount, failingLine, FAIL_KINDS } from "./trace.js";
 import { h, inline, feedbackSlot, choiceGroup, learnPanel, boot } from "./shell.js";
 
 const TAB_LABELS = ["Read the error", "Find the line", "Fix it", "Learn more"];
 const LAST_ERROR_NUMBER = 8;
 
-// The traceback as Colab shows it. `highlight` is "last" (tab 1) or "arrow" (tabs 2-3).
+// The traceback as Colab shows it. `highlight` is "last" (tab 1) or "fail" (tabs 2-3):
+// the ----> line, or for SyntaxError/IndentationError the File line, source line and ^ caret.
 function traceBlock(l, highlight) {
   return h(
     "div",
@@ -18,7 +19,10 @@ function traceBlock(l, highlight) {
       h(
         "div",
         { class: "trace-inner" },
-        classifyTrace(l.traceback).map((t) => h("span", { class: `tl ${t.kind}${t.kind === highlight ? " hl" : ""}` }, t.text))
+        classifyTrace(l.traceback).map((t) => {
+          const hl = highlight === "fail" ? FAIL_KINDS.includes(t.kind) : t.kind === highlight;
+          return h("span", { class: `tl ${t.kind}${hl ? " hl" : ""}` }, t.text);
+        })
       )
     )
   );
@@ -43,6 +47,7 @@ function readPanel(l) {
 function linePanel(l) {
   const slot = feedbackSlot();
   const n = codeLineCount(l.code);
+  const caret = failingLine(l.traceback)?.shape === "caret";
   const group = choiceGroup(
     Array.from({ length: n }, (_, i) => `Line ${i + 1}`),
     {
@@ -54,12 +59,12 @@ function linePanel(l) {
         slot.show(
           ok,
           ok ? "Correct!" : "Not quite",
-          h("span", { class: "fb-msg" }, ok ? "Right. The arrow ----> always points at the line that failed." : `Line ${i + 1} isn't the one that failed. Look for the arrow ----> in the traceback: it always points at the line that failed.`)
+          h("span", { class: "fb-msg" }, ok ? (caret ? "Right. The File line names the line number, and the ^ points at the spot." : "Right. The arrow ----> always points at the line that failed.") : (caret ? `Line ${i + 1} isn't the one that failed. Look at the top line, File "…", line N: it names the line, and the ^ points at the spot.` : `Line ${i + 1} isn't the one that failed. Look for the arrow ----> in the traceback: it always points at the line that failed.`))
         );
       },
     }
   );
-  return h("div", { class: "stack", style: "gap:14px" }, traceBlock(l, "arrow"), h("div", { class: "stack", style: "gap:10px" }, h("h2", { style: "font-size:22px" }, "Which line failed?"), group.el, slot.el));
+  return h("div", { class: "stack", style: "gap:14px" }, traceBlock(l, "fail"), h("div", { class: "stack", style: "gap:10px" }, h("h2", { style: "font-size:22px" }, "Which line failed?"), group.el, slot.el));
 }
 
 function fixPanel(l) {
@@ -77,7 +82,7 @@ function fixPanel(l) {
       },
     }
   );
-  return h("div", { class: "stack", style: "gap:14px" }, traceBlock(l, "arrow"), h("div", { class: "stack", style: "gap:10px" }, h("h2", { style: "font-size:22px" }, `Pick the best fix for line ${l.arrow_line}`), group.el, slot.el));
+  return h("div", { class: "stack", style: "gap:14px" }, traceBlock(l, "fail"), h("div", { class: "stack", style: "gap:10px" }, h("h2", { style: "font-size:22px" }, `Pick the best fix for line ${l.arrow_line}`), group.el, slot.el));
 }
 
 boot("fix-error", (l) => ({

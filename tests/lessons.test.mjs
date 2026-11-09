@@ -7,6 +7,7 @@ import { join } from "node:path";
 import { createNodeRunner } from "../shared/runner.js";
 import { judge, revealAllowed, isLoadFailure } from "../shared/check.js";
 import { validate, load, LessonError } from "../shared/lesson-loader.js";
+import { failingLine } from "../shared/trace.js";
 
 const dir = fileURLToPath(new URL("../lessons/", import.meta.url));
 const files = readdirSync(dir).filter((f) => f.endsWith(".json")).sort();
@@ -88,14 +89,24 @@ for (const file of files) {
       assert.equal(fixed.error, null);
     });
 
-    test(`${name}: traceback ends with the error type and its arrow points at arrow_line`, () => {
+    test(`${name}: traceback ends with the error type and points at arrow_line (----> arrow, or File line + caret)`, () => {
       const last = [...lesson.traceback].reverse().find((l) => l.trim() !== "");
       assert.ok(last.startsWith(lesson.error_type + ":"), `last traceback line was: ${last}`);
+      const codeLine = lesson.code.split("\n")[lesson.arrow_line - 1];
       const arrow = lesson.traceback.find((l) => /^\s*---->/.test(l));
-      assert.ok(arrow, "traceback has no ----> line");
-      const m = arrow.match(/^\s*---->\s+(\d+)\s(.*)$/);
-      assert.equal(Number(m[1]), lesson.arrow_line);
-      assert.equal(m[2].trim(), lesson.code.split("\n")[lesson.arrow_line - 1].trim());
+      if (arrow) {
+        const m = arrow.match(/^\s*---->\s+(\d+)\s(.*)$/);
+        assert.equal(Number(m[1]), lesson.arrow_line);
+        assert.equal(m[2].trim(), codeLine.trim());
+      } else {
+        // SyntaxError / IndentationError shape: File "...", line L / the source line / a ^ caret line
+        const fi = lesson.traceback.findIndex((l) => /^\s*File "[^"]*", line \d+/.test(l));
+        assert.ok(fi !== -1, 'traceback has neither a ----> line nor a File "...", line N header');
+        assert.equal(Number(lesson.traceback[fi].match(/line (\d+)/)[1]), lesson.arrow_line);
+        assert.equal((lesson.traceback[fi + 1] || "").trim(), codeLine.trim());
+        assert.ok(/^\s*\^+\s*$/.test(lesson.traceback[fi + 2] || ""), "no ^ caret line under the source line");
+        assert.equal(failingLine(lesson.traceback)?.shape, "caret");
+      }
     });
   }
 }

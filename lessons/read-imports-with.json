@@ -10,22 +10,22 @@
       "text": "Loads PyMuPDF, the library that opens PDFs. In code it is called `fitz`, an old name that stuck."
     },
     {
-      "code": "doc = fitz.open(\"/content/sample-sdf-document.pdf\")",
-      "title": "Open the file",
-      "text": "Opens the PDF you uploaded to Colab. `/content/` is the folder where Colab keeps uploads. `doc` now holds the whole document."
+      "code": "with fitz.open(\"/content/sample-sdf-document.pdf\") as doc:",
+      "title": "Open the file with `with`",
+      "text": "Opens the PDF you uploaded to Colab and names it `doc`. `/content/` is the folder where Colab keeps uploads. The indented lines below run with the file open, and `with` closes it for you when that block ends."
     },
     {
-      "code": "for i, page in enumerate(doc):",
+      "code": "    for i, page in enumerate(doc):",
       "title": "Go page by page",
       "text": "Visits each page in turn. `enumerate` hands you two things each time: a counter `i`, starting at 0, and the page itself."
     },
     {
-      "code": "    text = page.get_text()",
+      "code": "        text = page.get_text()",
       "title": "Ask the page for its text",
       "text": "A method call: the page gives back all its text as one string, which is stored in `text`."
     },
     {
-      "code": "    print(f\"Page {i + 1}: {len(text)} characters\")",
+      "code": "        print(f\"Page {i + 1}: {len(text)} characters\")",
       "title": "Print a summary line",
       "text": "An f-string fills in the values inside the curly brackets. `i + 1` turns the counter (0, 1, 2) into normal page numbers (1, 2, 3)."
     }
@@ -58,17 +58,17 @@
   "verify": null,
   "learn": {
     "video": {
-      "youtube_id": "",
-      "title": "Reading library code"
+      "youtube_id": "BfJxKKGl8lg",
+      "title": "Importing modules (Khan Academy)"
     },
     "links": [
       {
         "label": "PyMuPDF docs: opening a document",
-        "url": ""
+        "url": "https://pymupdf.readthedocs.io/en/latest/tutorial.html#opening-a-document"
       },
       {
-        "label": "Lecture or article",
-        "url": ""
+        "label": "Python docs: the with statement",
+        "url": "https://docs.python.org/3/reference/compound_stmts.html#the-with-statement"
       }
     ],
     "used_later": "Project 3, where you pull text and dates out of SDF pages, and again in the RAG projects."

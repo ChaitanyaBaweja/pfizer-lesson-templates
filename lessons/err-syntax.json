@@ -1,0 +1,68 @@
+{
+  "id": "err-syntax",
+  "template": "fix-error",
+  "title": "SyntaxError",
+  "kicker": "Python for SDFs · Fix the error",
+  "number": 1,
+  "error_type": "SyntaxError",
+  "code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nfor doc_type in doc_types\n    print(doc_type)",
+  "traceback": [
+    "  File \"<ipython-input-2>\", line 2",
+    "    for doc_type in doc_types",
+    "                             ^",
+    "SyntaxError: expected ':'",
+    ""
+  ],
+  "notes": [
+    {
+      "label": "SyntaxError",
+      "text": "The type of error. Python couldn't read the cell as Python, so none of it ran, not even line 1."
+    },
+    {
+      "label": "expected ':'",
+      "text": "The reason. Python expected a colon. A `for` line has to end with `:`."
+    },
+    {
+      "label": "line 2, and the ^",
+      "text": "A SyntaxError has no ----> arrow. The line at the top names the line number, and the ^ marks where Python got stuck: the end of line 2."
+    }
+  ],
+  "arrow_line": 2,
+  "fixes": [
+    {
+      "label": "for doc_type in doc_types:",
+      "ok": true,
+      "title": "Best fix",
+      "feedback": "A `for` line ends with a colon. With it in place, the loop prints the three document types, one per line.",
+      "fixed_code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nfor doc_type in doc_types:\n    print(doc_type)"
+    },
+    {
+      "label": "for doc_type in doc_types;",
+      "ok": false,
+      "title": "Still a SyntaxError",
+      "feedback": "A semicolon isn't a colon. Python still can't tell where the loop line ends and the repeated part starts.",
+      "fixed_code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\nfor doc_type in doc_types;\n    print(doc_type)"
+    },
+    {
+      "label": "    for doc_type in doc_types",
+      "ok": false,
+      "title": "A new error, same missing colon",
+      "feedback": "Pushing line 2 in gives you an IndentationError (unexpected indent), and the colon is still missing. The spaces were fine. The colon was the problem.",
+      "fixed_code": "doc_types = [\"Cover Letter\", \"Certificate of Quality\", \"BSE/TSE Declaration\"]\n    for doc_type in doc_types\n    print(doc_type)"
+    }
+  ],
+  "learn": {
+    "video": {
+      "youtube_id": "WUoCSkSW4cs",
+      "title": "Debugging with stack traces (Khan Academy)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: syntax errors",
+        "url": "https://docs.python.org/3/tutorial/errors.html#syntax-errors"
+      }
+    ],
+    "used_later": "2 of 8 · IndentationError"
+  },
+  "_note": "traceback from IPython 7.34 / Python 3.12 (kernel output, only the temp-file path shortened to <ipython-input-2>); confirm against a live Colab run. SyntaxError and IndentationError are reported before the cell runs, so IPython prints a File/line header and a ^ caret instead of a ----> arrow"
+}

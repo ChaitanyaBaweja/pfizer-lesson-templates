@@ -1,0 +1,71 @@
+{
+  "id": "read-comprehensions",
+  "template": "read-code",
+  "title": "Reading list comprehensions",
+  "kicker": "Python for SDFs · Read the code",
+  "lines": [
+    {
+      "code": "issue_dates = [\"2021-03-15\", \"2024-06-02\", \"2019-11-20\", \"2023-08-09\"]",
+      "title": "A list of dates",
+      "text": "Four issue dates, stored as text, the way you'd pull them off SDF pages. The values are made up."
+    },
+    {
+      "code": "years = [int(d[:4]) for d in issue_dates]",
+      "title": "Build a new list in one line",
+      "text": "Read it from the middle. `for d in issue_dates` visits each date, and the part before `for`, `int(d[:4])`, is what goes into the new list: the first 4 characters, turned into a number. It does the same job as a three-line loop: `years = []`, then `for d in issue_dates:`, then `years.append(int(d[:4]))`."
+    },
+    {
+      "code": "old_years = [y for y in years if y < 2023]",
+      "title": "Keep only some items",
+      "text": "The `if` at the end is a filter. Each `y` goes into the new list only when the condition is true, so this keeps the years before 2023."
+    },
+    {
+      "code": "print(old_years)",
+      "title": "Print the result",
+      "text": "Shows the filtered list."
+    }
+  ],
+  "predict": {
+    "question": "What does **line 4** print?",
+    "options": [
+      {
+        "label": "[2021, 2019]",
+        "ok": true,
+        "feedback": "Yes. Only 2021 and 2019 are below 2023, and they keep their original order."
+      },
+      {
+        "label": "['2021-03-15', '2019-11-20']",
+        "ok": false,
+        "feedback": "Line 3 loops over `years`, not `issue_dates`. By then each date has already become a number like 2021."
+      },
+      {
+        "label": "[2021, 2024, 2019, 2023]",
+        "ok": false,
+        "feedback": "That's `years`, from line 2. In line 3, `if y < 2023` drops 2024 and 2023."
+      },
+      {
+        "label": "[True, False, True, False]",
+        "ok": false,
+        "feedback": "The `if` at the end filters items. It doesn't change what's stored. To get True or False for each year you'd write `[y < 2023 for y in years]`."
+      }
+    ]
+  },
+  "verify": {
+    "setup": "",
+    "code": "issue_dates = [\"2021-03-15\", \"2024-06-02\", \"2019-11-20\", \"2023-08-09\"]\nyears = [int(d[:4]) for d in issue_dates]\nold_years = [y for y in years if y < 2023]\nprint(old_years)",
+    "stdout_startswith": "[2021, 2019]"
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "YlY2g2xrl6Q",
+      "title": "Learn Python List Comprehensions in 10 Minutes (Bro Code)"
+    },
+    "links": [
+      {
+        "label": "Python tutorial: list comprehensions",
+        "url": "https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions"
+      }
+    ],
+    "used_later": "Project 7 reads every page of an SDF with `pages = [page.extract_text() for page in reader.pages]`, and Project 8 collects chunk text with `[chunk.text for chunk in chunks_metadata]`."
+  }
+}

@@ -27,3 +27,9 @@ test("the page scripts do not duplicate the shell's tab logic", () => {
     assert.ok(!src.includes("function revealInPanel"), `${script} redefines revealInPanel`);
   }
 });
+
+test("code shown in buttons keeps its leading spaces (indentation can be the answer)", () => {
+  const css = readFileSync(join(root, "shared", "styles.css"), "utf8");
+  assert.match(css, /\.choice\.mono\s*\{[^}]*white-space:\s*pre-wrap/, ".choice.mono needs white-space: pre-wrap");
+  assert.match(css, /\.code-text\s*\{[^}]*white-space:\s*pre-wrap/, ".code-text needs white-space: pre-wrap");
+});
