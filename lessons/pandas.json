@@ -1,0 +1,148 @@
+{
+  "id": "pandas",
+  "template": "concept",
+  "title": "Cleaning a table with pandas",
+  "kicker": "Python for SDFs · Concept lesson",
+  "what": {
+    "heading": "What is pandas?",
+    "paragraphs": [
+      "**Pandas** is a Python library for working with tables. It holds a table as a **DataFrame**: rows and columns, like a sheet in Excel, that you change with code instead of by hand.",
+      "Real tables are messy. A value is missing, a row was entered twice, a number was saved as text. Pandas finds and fixes each of these in one line."
+    ],
+    "points": [
+      {
+        "title": "DataFrame",
+        "text": "The whole table. It's usually called `df`."
+      },
+      {
+        "title": "Column",
+        "text": "`df[\"pages\"]` gives one column, called a Series."
+      },
+      {
+        "title": "Write it back",
+        "text": "Most cleaning steps give back a new table. Save it with `df = ...`, or `df` stays the same."
+      }
+    ],
+    "code": "import pandas as pd\n\ndf = pd.read_csv(\"/content/documents.csv\")"
+  },
+  "example": {
+    "heading": "What it looks like",
+    "code": "import pandas as pd\n\ndocs = [\n    {\"doc_type\": \"Certificate of Quality\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Certificate of Quality\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n]\ndf = pd.DataFrame(docs)\nprint(df)",
+    "visual": null,
+    "caption": "Three problems in three rows: the Cover Letter has no lot number (pandas shows None), the first row appears twice, and the page counts are text in quotes, not numbers. These records are made up."
+  },
+  "demos": [
+    {
+      "label": "Inspect the table",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame([\n    {\"doc_type\": \"Certificate of Quality\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Certificate of Quality\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n])\nprint(df.shape)\ndf.info()",
+      "note": "df.shape gives (rows, columns). df.info() lists each column, how many values are filled in (Non-Null Count) and its type (Dtype). lot_number has 2 of 3 filled in, and pages is object, which means text."
+    },
+    {
+      "label": "Count and fill missing values",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame([\n    {\"doc_type\": \"Certificate of Quality\", \"lot_number\": \"AB-4417\"},\n    {\"doc_type\": \"Cover Letter\", \"lot_number\": None},\n])\nprint(df.isnull().sum())\ndf[\"lot_number\"] = df[\"lot_number\"].fillna(\"unknown\")\nprint(df)",
+      "note": "isnull().sum() counts the missing values in each column. fillna() fills them. df.dropna() would remove the whole row instead, and you'd lose the Cover Letter."
+    },
+    {
+      "label": "Remove duplicate rows",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame([\n    {\"doc_type\": \"Certificate of Quality\", \"lot_number\": \"AB-4417\"},\n    {\"doc_type\": \"Chain of Custody\", \"lot_number\": \"CF-2290\"},\n    {\"doc_type\": \"Certificate of Quality\", \"lot_number\": \"AB-4417\"},\n])\nprint(df.duplicated().sum())\ndf = df.drop_duplicates()\nprint(df)",
+      "note": "duplicated().sum() counts rows that repeat an earlier row. drop_duplicates() keeps the first copy and removes the rest."
+    },
+    {
+      "label": "Fix a column's type",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame({\"pages\": [\"3\", \"1\", \"2\"]})\nprint(df[\"pages\"].dtype)\nprint(df[\"pages\"].sum())\n\ndf[\"pages\"] = df[\"pages\"].astype(int)\nprint(df[\"pages\"].sum())",
+      "note": "The type is object, which means text. Adding up text glues it together, so the first sum prints 312. astype(int) turns each value into a whole number, and the sum becomes 6."
+    },
+    {
+      "label": "Save the clean table",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame([\n    {\"doc_type\": \"Certificate of Quality\", \"pages\": 3},\n    {\"doc_type\": \"Cover Letter\", \"pages\": 1},\n])\ndf.to_csv(\"documents_clean.csv\", index=False)\nprint(open(\"documents_clean.csv\").read())",
+      "note": "to_csv() writes the table to a CSV file, one line per row with commas between values. index=False leaves out the row numbers. In Colab, the file appears in the Files panel."
+    }
+  ],
+  "try": {
+    "prompt": "Clean `df` in three steps: remove the duplicate row, fill the missing `lot_number` with \"unknown\", and turn `pages` into whole numbers.",
+    "starter": "import pandas as pd\n\ndocs = [\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Sample Vials Co.\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"lot_number\": \"CF-2290\", \"pages\": \"2\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n]\ndf = pd.DataFrame(docs)\n\n# 1. remove the duplicate row\n# 2. fill the missing lot_number with \"unknown\"\n# 3. turn pages into whole numbers\n\nprint(df)\n",
+    "solution": "import pandas as pd\n\ndocs = [\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Sample Vials Co.\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"lot_number\": \"CF-2290\", \"pages\": \"2\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n]\ndf = pd.DataFrame(docs)\n\ndf = df.drop_duplicates()\ndf[\"lot_number\"] = df[\"lot_number\"].fillna(\"unknown\")\ndf[\"pages\"] = df[\"pages\"].astype(int)\n\nprint(df)\n",
+    "checks": [
+      {
+        "expr": "type(df).__name__ == \"DataFrame\"",
+        "expect": true,
+        "hint": "Keep the table in a variable named df. Start from the starter code, which builds df with pd.DataFrame(docs)."
+      },
+      {
+        "expr": "bool(\"Cover Letter\" in list(df[\"doc_type\"]))",
+        "expect": true,
+        "hint": "The Cover Letter row is gone. dropna() removes every row with a missing value. Use fillna(\"unknown\") on the lot_number column instead, so the row stays."
+      },
+      {
+        "expr": "bool(not df.duplicated().any())",
+        "expect": true,
+        "hint": "df still has the repeated Certificate of Quality row. Write df = df.drop_duplicates(). On its own, drop_duplicates() gives back a new table and leaves df as it was."
+      },
+      {
+        "expr": "len(df) == 3",
+        "expect": true,
+        "hint": "df should have 3 rows: the Certificate of Quality, the Cover Letter and the Chain of Custody."
+      },
+      {
+        "expr": "bool(df[\"lot_number\"].isnull().sum() == 0)",
+        "expect": true,
+        "hint": "lot_number still has a missing value. Write the filled column back: df[\"lot_number\"] = df[\"lot_number\"].fillna(\"unknown\")."
+      },
+      {
+        "expr": "bool((df[\"lot_number\"] == \"unknown\").sum() == 1)",
+        "expect": true,
+        "hint": "Fill the missing lot_number with the text \"unknown\", in lowercase and in quotes."
+      },
+      {
+        "expr": "df[\"pages\"].dtype.kind == \"i\"",
+        "expect": true,
+        "hint": "pages should hold whole numbers, not text or decimals. Write df[\"pages\"] = df[\"pages\"].astype(int)."
+      }
+    ],
+    "expect_stdout": null,
+    "stdout_hint": "",
+    "wrong": [
+      {
+        "code": "import pandas as pd\n\ndocs = [\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Sample Vials Co.\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"lot_number\": \"CF-2290\", \"pages\": \"2\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n]\ndf = pd.DataFrame(docs)\ndf.drop_duplicates()\ndf[\"lot_number\"] = df[\"lot_number\"].fillna(\"unknown\")\ndf[\"pages\"] = df[\"pages\"].astype(int)",
+        "hint_contains": "df = df.drop_duplicates()"
+      },
+      {
+        "code": "import pandas as pd\n\ndocs = [\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Sample Vials Co.\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"lot_number\": \"CF-2290\", \"pages\": \"2\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n]\ndf = pd.DataFrame(docs)\ndf = df.drop_duplicates()\ndf = df.dropna()\ndf[\"pages\"] = df[\"pages\"].astype(int)",
+        "hint_contains": "dropna()"
+      },
+      {
+        "code": "import pandas as pd\n\ndocs = [\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Sample Vials Co.\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"lot_number\": \"CF-2290\", \"pages\": \"2\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n]\ndf = pd.DataFrame(docs)\ndf = df.drop_duplicates()\ndf[\"lot_number\"].fillna(\"unknown\")\ndf[\"pages\"] = df[\"pages\"].astype(int)",
+        "hint_contains": "Write the filled column back"
+      },
+      {
+        "code": "import pandas as pd\n\ndocs = [\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Sample Vials Co.\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"lot_number\": \"CF-2290\", \"pages\": \"2\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n]\ndf = pd.DataFrame(docs)\ndf = df.drop_duplicates()\ndf[\"lot_number\"] = df[\"lot_number\"].fillna(\"Unknown\")\ndf[\"pages\"] = df[\"pages\"].astype(int)",
+        "hint_contains": "lowercase"
+      },
+      {
+        "code": "import pandas as pd\n\ndocs = [\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Sample Vials Co.\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"lot_number\": \"CF-2290\", \"pages\": \"2\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n]\ndf = pd.DataFrame(docs)\ndf = df.drop_duplicates()\ndf[\"lot_number\"] = df[\"lot_number\"].fillna(\"unknown\")\ndf[\"pages\"].astype(int)",
+        "hint_contains": "astype(int)"
+      },
+      {
+        "code": "import pandas as pd\n\ndocs = [\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n    {\"doc_type\": \"Cover Letter\", \"vendor\": \"Sample Vials Co.\", \"lot_number\": None, \"pages\": \"1\"},\n    {\"doc_type\": \"Chain of Custody\", \"vendor\": \"Demo Filters Ltd.\", \"lot_number\": \"CF-2290\", \"pages\": \"2\"},\n    {\"doc_type\": \"Certificate of Quality\", \"vendor\": \"Example Bio Supplies\", \"lot_number\": \"AB-4417\", \"pages\": \"3\"},\n]\ndf = pd.DataFrame(docs)\ndf = df.drop_duplicates()\ndf[\"lot_number\"] = df[\"lot_number\"].fillna(\"unknown\")\ndf[\"pages\"] = df[\"pages\"].astype(float)",
+        "hint_contains": "not text or decimals"
+      }
+    ]
+  },
+  "learn": {
+    "video": {
+      "youtube_id": "ZyhVh-qRZPA",
+      "title": "Python Pandas Tutorial (Part 1): Getting Started with Data Analysis (Corey Schafer)"
+    },
+    "links": [
+      {
+        "label": "pandas: 10 minutes to pandas",
+        "url": "https://pandas.pydata.org/docs/user_guide/10min.html"
+      },
+      {
+        "label": "pandas: working with missing data",
+        "url": "https://pandas.pydata.org/docs/user_guide/missing_data.html"
+      }
+    ],
+    "used_later": "Part 1 of your Project 2 notebook uses these same steps on a real dataset, bank_loan.csv. Projects 5 and 7 show their results as DataFrames."
+  }
+}
